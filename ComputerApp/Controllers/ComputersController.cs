@@ -160,8 +160,32 @@ namespace ComputerApp.Controllers
         //BUILD OWN COMPUTER
         public async Task<IActionResult> BuildComputer()
         {
-            //var applicationDbContext = _context.Computer.Include(c => c.Order);
-            return View();
+            //Obtengo el objeto cuyo tipo es CPU, para con su ID obtener todas las posibles opciones de CPU
+            List<CType> ComponentsList = await _context.CType.Include(c => c.Components).ToListAsync();
+
+
+            //int idToSearch = _context.CType.Where(t => t.Name == "CPU").FirstOrDefault<CType>().Id;//.Include(c => c.ComponentType);
+
+            //var appDbContextComponent = _context.Component.Include(c => c.ComponentType);
+            //var prueba = appDbContextComponent.Where(t => t.ComponentType.Id == idToSearch);
+            //Esta linea de abajo hace lo mismo que las dos linea de arriba
+            //Obtengo todos los tipos de CPU que existen
+            //var appDbContextComponent = _context.Component.Include(c => c.ComponentType).Where(t => t.ComponentType.Id == idToSearch);
+            //List<Component> objectToSendToView = await appDbContextComponent.ToListAsync();
+
+            //return View(objectToSendToView);
+            return View(ComponentsList);
+        }
+
+        // POST: Computers/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public void BuildComputer(string processor, string memory, string hdd, string software)
+        {
+            int a = 5;
+            //return View(ComponentsList);
         }
         //END BUILD OWN COMPUTER
     }

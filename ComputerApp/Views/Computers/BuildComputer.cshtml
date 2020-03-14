@@ -1,0 +1,90 @@
+﻿@*@model ComputerApp.Models.Computer*@
+@model List<ComputerApp.Models.CType>
+@*@model List<Component>*@
+
+@{
+    ViewData["Title"] = "BuildComputer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Build Your Own Computer</h1>
+<hr />
+
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="BuildComputer">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @foreach (var item in Model)
+                {
+                    string CName = @item.Name;
+                    switch (CName)
+                    {
+                        case "CPU":
+                            CName = "Processor";
+                            break;
+                        case "RAM":
+                            CName = "Memory";
+                            break;
+                        default:
+                            break;
+                    }
+                    <h4>@CName *</h4>
+                    <div class="form-group">
+                        @if (CName == "Disco Duro")
+                        {
+                            CName = "hdd";
+                        }
+                        <select class="custom-select" name="@CName">
+                            <option selected>Open this select menu</option>
+                            @foreach (var subitem in item.Components)
+                            {
+                                <option value="@subitem.Id">@subitem.Name</option>
+                            }
+
+                        </select>
+                    </div>
+                }
+                <div class="form-group">
+                    <input type="submit" value="Add to Cart" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    @*<dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.IsDesktop)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IsDesktop)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ImgUrl)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ImgUrl)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Order)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Order.Id)
+            </dd>
+        </dl>*@
+</div>
+<div>
+    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
+    <a asp-action="Index">Back to List</a>
+</div>
