@@ -14,5 +14,10 @@ namespace ComputerApp.Data
             : base(options)
         {
         }
+        public DbSet<ComputerApp.Models.Component> Component { get; set; }
+        public DbSet<ComputerApp.Models.Computer> Computer { get; set; }
+        public DbSet<ComputerApp.Models.ComputerComponent> ComputerComponent { get; set; }
+        public DbSet<ComputerApp.Models.CType> CType { get; set; }
+        public DbSet<ComputerApp.Models.Order> Order { get; set; }
     }
 }
