@@ -502,3 +502,8 @@ D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreap
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\CTypes\Details.cshtml.g.cs
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\CTypes\Edit.cshtml.g.cs
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\CTypes\Index.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Orders\Create.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Orders\Delete.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Orders\Details.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Orders\Edit.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Orders\Index.cshtml.g.cs

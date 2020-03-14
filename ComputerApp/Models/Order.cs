@@ -16,7 +16,7 @@ namespace ComputerApp.Models
         public double Price { get; set; }
 
         [Required]
-        [StringLength(1, ErrorMessage = "This field can not be empty")]
+        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid doubleNumber")]
         [Display(Name = "Quantity")]
         public int Qty { get; set; }
 

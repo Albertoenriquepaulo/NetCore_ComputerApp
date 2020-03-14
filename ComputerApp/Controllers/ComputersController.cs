@@ -156,5 +156,13 @@ namespace ComputerApp.Controllers
         {
             return _context.Computer.Any(e => e.Id == id);
         }
+
+        //BUILD OWN COMPUTER
+        public async Task<IActionResult> BuildComputer()
+        {
+            //var applicationDbContext = _context.Computer.Include(c => c.Order);
+            return View();
+        }
+        //END BUILD OWN COMPUTER
     }
 }
