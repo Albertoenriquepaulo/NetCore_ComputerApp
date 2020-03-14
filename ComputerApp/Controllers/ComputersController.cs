@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ComputerApp.Data;
 using ComputerApp.Models;
+using ComputerApp.ViewModels;
 
 namespace ComputerApp.Controllers
 {
@@ -182,11 +183,67 @@ namespace ComputerApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public void BuildComputer(string processor, string memory, string hdd, string software)
+        //public void BuildComputer(string ProcessorId, string MemoryId, string Hdd, string Software)
+        public async Task BuildComputer(ComponentVM dataFromView)
         {
-            int a = 5;
+            Computer computer = new Computer();
+            computer.Name = "Custom Computer";
+
+            computer.Price = GetTotalPrice(dataFromView);
+            computer.IsDesktop = true;
+            computer.OrderId = 2; //TODO: Debo generar un order ID
+            computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
+            int computerId = await InsertComputerToDB(computer);
+            int computerComponentId = await InsertComponentsToComputerComponentDB(dataFromView, computerId);
+
+            //TODO: Debo de colocar computer en la tabla Computer para tener un ID y añadir los componentes
+            //computer.ComputerComponents.Add();
+            //ComputerComponentsController crear = new ComputerComponentsController(_context);
+
+
             //return View(ComponentsList);
+
         }
         //END BUILD OWN COMPUTER
+        public double GetTotalPrice(ComponentVM dataFromView)
+        {
+            int[] idArray = new int[4];
+            double totalPrice = 0;
+            Component component = new Component();
+            idArray[0] = dataFromView.HddId; idArray[1] = dataFromView.SoftwareId; idArray[2] = dataFromView.ProcessorId; idArray[3] = dataFromView.MemoryId;
+            foreach (int item in idArray)
+            {
+                component = _context.Component.Where(c => c.Id == item).FirstOrDefault<Component>();
+                totalPrice += component.Price;
+            }
+            return (totalPrice);
+        }
+
+        //Inserta un elemento nuevo en la bd Computer y devuelve el id de este elemento
+        //public async Task<int> CreateFromCode([Bind("Id,Name,Price,IsDesktop,ImgUrl,OrderId")] Computer computer)
+        public async Task<int> InsertComputerToDB(Computer computer)
+        {
+            _context.Add(computer);
+            await _context.SaveChangesAsync();
+
+            return computer.Id;
+        }
+        public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId)
+        {
+            int[] idArray = new int[4];
+
+            idArray[0] = component.HddId; idArray[1] = component.SoftwareId; idArray[2] = component.ProcessorId; idArray[3] = component.MemoryId;
+            //computerComponent.ComputerId = computerId;
+            foreach (var item in idArray)
+            {
+                ComputerComponent computerComponent = new ComputerComponent();
+                computerComponent.ComputerId = computerId;
+                computerComponent.ComponentId = item;
+                _context.Add(computerComponent);
+                await _context.SaveChangesAsync();
+            }
+
+            return 2;
+        }
     }
 }

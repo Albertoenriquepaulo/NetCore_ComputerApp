@@ -33,7 +33,11 @@
                     <div class="form-group">
                         @if (CName == "Disco Duro")
                         {
-                            CName = "hdd";
+                            CName = "hddId";
+                        }
+                        else
+                        {
+                            CName += "Id";
                         }
                         <select class="custom-select" name="@CName">
                             <option selected>Open this select menu</option>
