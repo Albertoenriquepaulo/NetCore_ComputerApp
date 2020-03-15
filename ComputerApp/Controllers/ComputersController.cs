@@ -187,14 +187,23 @@ namespace ComputerApp.Controllers
         public async Task BuildComputer(ComponentVM dataFromView)
         {
             Computer computer = new Computer();
-            computer.Name = "Custom Computer";
+            Order order = new Order();
 
-            computer.Price = GetTotalPrice(dataFromView);
+            order.Price += GetComputerTotalPrice(dataFromView);
+            order.Qty = 1;
+            order.IsCart = false;
+
+            int orderId = await InsertOrderToDB(order);
+
+            computer.Name = "Custom Computer";
+            computer.Price = GetComputerTotalPrice(dataFromView);
             computer.IsDesktop = true;
-            computer.OrderId = 2; //TODO: Debo generar un order ID
+            computer.OrderId = orderId; //TODO: Debo generar un order ID
             computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
             int computerId = await InsertComputerToDB(computer);
             int computerComponentId = await InsertComponentsToComputerComponentDB(dataFromView, computerId);
+
+
 
             //TODO: Debo de colocar computer en la tabla Computer para tener un ID y añadir los componentes
             //computer.ComputerComponents.Add();
@@ -205,7 +214,7 @@ namespace ComputerApp.Controllers
 
         }
         //END BUILD OWN COMPUTER
-        public double GetTotalPrice(ComponentVM dataFromView)
+        public double GetComputerTotalPrice(ComponentVM dataFromView)
         {
             int[] idArray = new int[4];
             double totalPrice = 0;
@@ -219,7 +228,7 @@ namespace ComputerApp.Controllers
             return (totalPrice);
         }
 
-        //Inserta un elemento nuevo en la bd Computer y devuelve el id de este elemento
+        //Inserta un elemento Computer nuevo en la bd Computer y devuelve el id de este elemento
         //public async Task<int> CreateFromCode([Bind("Id,Name,Price,IsDesktop,ImgUrl,OrderId")] Computer computer)
         public async Task<int> InsertComputerToDB(Computer computer)
         {
@@ -231,19 +240,27 @@ namespace ComputerApp.Controllers
         public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId)
         {
             int[] idArray = new int[4];
-
+            ComputerComponent computerComponent = new ComputerComponent();
             idArray[0] = component.HddId; idArray[1] = component.SoftwareId; idArray[2] = component.ProcessorId; idArray[3] = component.MemoryId;
             //computerComponent.ComputerId = computerId;
             foreach (var item in idArray)
             {
-                ComputerComponent computerComponent = new ComputerComponent();
+                computerComponent = new ComputerComponent();
                 computerComponent.ComputerId = computerId;
                 computerComponent.ComponentId = item;
                 _context.Add(computerComponent);
                 await _context.SaveChangesAsync();
             }
 
-            return 2;
+            return computerComponent.Id;
+        }
+
+        //Inserta un elemento Order nuevo en la bd Order y devuelve el id de este elemento
+        public async Task<int> InsertOrderToDB(Order order)
+        {
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+            return order.Id;
         }
     }
 }
