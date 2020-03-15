@@ -10,6 +10,8 @@ using ComputerApp.Models;
 using ComputerApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 
+
+//Video Roles y autorizaciones, usuario desde html min 20
 namespace ComputerApp.Controllers
 {
     public class ComputersController : Controller
@@ -29,11 +31,12 @@ namespace ComputerApp.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Computer.Include(c => c.Order);
-
+            var userTest = _userManager.Users.Include(o => o.Order);
             /////////////////////
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
             string currentlyLoggedInUsername = User.Identity.Name;  //Por que puedo usar aqui el User, ¿¿¿donde está declarado???
-            //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;ç
+            await _userManager.AddToRoleAsync(myCurrentUser, "cliente");
             ////////////////////
 
             return View(await applicationDbContext.ToListAsync());
@@ -199,6 +202,7 @@ namespace ComputerApp.Controllers
         public async Task BuildComputer(ComponentVM dataFromView)
         {
             Computer computer = new Computer();
+            AppUser myCurrentUser = await _userManager.GetUserAsync(User);
             Order order = new Order();
 
             order.Price += GetComputerTotalPrice(dataFromView);
@@ -206,6 +210,7 @@ namespace ComputerApp.Controllers
             order.IsCart = false;
 
             int orderId = await InsertOrderToDB(order);
+            myCurrentUser.Order = order;
 
             computer.Name = "Custom Computer";
             computer.Price = GetComputerTotalPrice(dataFromView);
@@ -274,5 +279,12 @@ namespace ComputerApp.Controllers
             await _context.SaveChangesAsync();
             return order.Id;
         }
+        //public async Task<int> InsertOrderToUser(Order order)
+        //{
+        //    _context.Add(order);
+        //    await _context.SaveChangesAsync();
+        //    return order.Id;
+        //}
+
     }
 }
