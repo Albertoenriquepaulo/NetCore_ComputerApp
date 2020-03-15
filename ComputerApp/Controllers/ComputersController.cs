@@ -8,15 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using ComputerApp.Data;
 using ComputerApp.Models;
 using ComputerApp.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace ComputerApp.Controllers
 {
     public class ComputersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ComputersController(ApplicationDbContext context)
+        public ComputersController(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
         }
 
@@ -24,6 +29,13 @@ namespace ComputerApp.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Computer.Include(c => c.Order);
+
+            /////////////////////
+            AppUser myCurrentUser = await _userManager.GetUserAsync(User);
+            string currentlyLoggedInUsername = User.Identity.Name;  //Por que puedo usar aqui el User, ¿¿¿donde está declarado???
+            //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ////////////////////
+
             return View(await applicationDbContext.ToListAsync());
         }
 
