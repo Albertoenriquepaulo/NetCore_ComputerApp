@@ -36,7 +36,7 @@ namespace ComputerApp.Controllers
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
             string currentlyLoggedInUsername = User.Identity.Name;  //Por que puedo usar aqui el User, ¿¿¿donde está declarado???
             //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;ç
-            await _userManager.AddToRoleAsync(myCurrentUser, "cliente");
+            //await _userManager.AddToRoleAsync(myCurrentUser, "cliente");
             ////////////////////
 
             return View(await applicationDbContext.ToListAsync());

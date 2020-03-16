@@ -74,6 +74,8 @@ namespace ComputerApp.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+            public bool Administrator { get; set; }
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -98,7 +100,12 @@ namespace ComputerApp.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "cliente"); // Todo usuario registrado será de tipo cliente
+                    await _userManager.AddToRoleAsync(user, "client"); // Todo usuario registrado será de tipo cliente
+                    if (Input.Administrator)
+                    {
+                        await _userManager.AddToRoleAsync(user, "admin");
+                    }
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
