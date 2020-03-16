@@ -62,6 +62,7 @@ namespace ComputerApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["AppUserId"] = new SelectList(_context.Set<AppUser>(), "Id", "Id", order.AppUserId); //Added for me after 2nd Migration
             return View(order);
         }
 
