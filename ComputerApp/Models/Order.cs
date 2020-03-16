@@ -24,6 +24,9 @@ namespace ComputerApp.Models
         [Display(Name = "Is in the Cart")]
         public bool IsCart { get; set; }
 
+        //public int AppUserId { get; set; }
+        //public AppUser AppUser { get; set; }
+
         public List<ComputerComponent> ComputerComponents { get; set; }
     }
 }
