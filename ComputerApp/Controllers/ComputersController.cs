@@ -210,7 +210,7 @@ namespace ComputerApp.Controllers
             order.IsCart = false;
 
             int orderId = await InsertOrderToDB(order);
-            myCurrentUser.Order = order;
+            //myCurrentUser.Order = order;
 
             computer.Name = "Custom Computer";
             computer.Price = GetComputerTotalPrice(dataFromView);
@@ -233,10 +233,12 @@ namespace ComputerApp.Controllers
         //END BUILD OWN COMPUTER
         public double GetComputerTotalPrice(ComponentVM dataFromView)
         {
-            int[] idArray = new int[4];
+            Type type = typeof(ComponentVM);
+            int NumberOfRecords = type.GetProperties().Length;
+            int[] idArray = new int[NumberOfRecords];
             double totalPrice = 0;
             Component component = new Component();
-            idArray[0] = dataFromView.HddId; idArray[1] = dataFromView.SoftwareId; idArray[2] = dataFromView.ProcessorId; idArray[3] = dataFromView.MemoryId;
+            idArray[0] = dataFromView.HddId; idArray[1] = dataFromView.SoftwareId; idArray[2] = dataFromView.ProcessorId; idArray[3] = dataFromView.MemoryId; idArray[4] = dataFromView.OSId;
             foreach (int item in idArray)
             {
                 component = _context.Component.Where(c => c.Id == item).FirstOrDefault<Component>();

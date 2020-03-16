@@ -32,14 +32,27 @@
                     }
                     <h4>@CName *</h4>
                     <div class="form-group">
-                        @if (CName == "Disco Duro")
+                        @*@if (CName == "Disco Duro")
+                            {
+                                CName = "hddId";
+                            }
+                            else
+                            {
+                                CName += "Id";
+                            }*@
+                        @switch (CName)
                         {
-                            CName = "hddId";
+                            case "Disco Duro":
+                                CName = "hddId";
+                                break;
+                            case "Sistema Operativo":
+                                CName = "OSId";
+                                break;
+                            default:
+                                CName += "Id";
+                                break;
                         }
-                        else
-                        {
-                            CName += "Id";
-                        }
+
                         <select class="custom-select" name="@CName">
                             <option selected>Open this select menu</option>
                             @foreach (var subitem in item.Components)
