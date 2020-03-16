@@ -33,8 +33,8 @@ namespace ComputerApp.Services
             //CREANDO USUARIO admin Y AÑADIENDO ROL admin, at STARTUP
             AppUser adminUser = new AppUser
             {
-                UserName = "root",
-                Email = "root@admin.com",
+                UserName = "iker@admin.com",
+                Email = "iker@admin.com",
                 Name = "admin",
                 BirthDate = new DateTime(1979, 01, 29)
             };

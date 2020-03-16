@@ -3,6 +3,7 @@
 @*@model List<Component>*@
 
 @{
+    double total = 0;
     ViewData["Title"] = "BuildComputer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -43,12 +44,14 @@
                             <option selected>Open this select menu</option>
                             @foreach (var subitem in item.Components)
                             {
-                                <option value="@subitem.Id">@subitem.Name</option>
+                                @*<option value="@subitem.Id"><p>@subitem.Name</p><p>@subitem.Price</p></option>*@
+                                <option value="@subitem.Id" price="@subitem.Price">@subitem.Name [+@string.Format("€{0:N2}", @subitem.Price)]</option>
                             }
 
                         </select>
                     </div>
                 }
+                <p id="total-price">Total Price: </p>
                 <div class="form-group">
                     <input type="submit" value="Add to Cart" class="btn btn-primary" />
                 </div>
@@ -92,3 +95,9 @@
     @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+@section Scripts
+{
+    <script src="~/js/BuildComputer.js"></script>
+}
