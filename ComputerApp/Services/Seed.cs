@@ -33,13 +33,13 @@ namespace ComputerApp.Services
             //CREANDO USUARIO admin Y AÑADIENDO ROL admin, at STARTUP
             AppUser adminUser = new AppUser
             {
-                UserName = "iker@admin.com",
-                Email = "iker@admin.com",
-                Name = "admin",
+                UserName = "root@admin.com",
+                Email = "root@admin.com",
+                Name = "root",
                 BirthDate = new DateTime(1979, 01, 29)
             };
 
-            var result = await userManager.CreateAsync(adminUser, "a");
+            var result = await userManager.CreateAsync(adminUser, "root");
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(adminUser, "admin");

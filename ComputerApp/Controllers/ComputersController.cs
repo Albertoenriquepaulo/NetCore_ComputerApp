@@ -9,11 +9,13 @@ using ComputerApp.Data;
 using ComputerApp.Models;
 using ComputerApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 
 //Video Roles y autorizaciones, usuario desde html min 20
 namespace ComputerApp.Controllers
 {
+    [Authorize]
     public class ComputersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -30,16 +32,55 @@ namespace ComputerApp.Controllers
         // GET: Computers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Computer.Include(c => c.Order);
-            var userTest = _userManager.Users.Include(o => o.Order);
-            /////////////////////
+            List<Computer> myList = new List<Computer>();
+            List<ComputerVM> dataToSendToView = new List<ComputerVM>();
+            List<Component> ComponentList = await _context.Component.ToListAsync();
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
-            string currentlyLoggedInUsername = User.Identity.Name;  //Por que puedo usar aqui el User, ¿¿¿donde está declarado???
-            //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;ç
-            //await _userManager.AddToRoleAsync(myCurrentUser, "cliente");
-            ////////////////////
+            //var applicationDbContext = _context.Computer.Include(c => c.Order);
 
-            return View(await applicationDbContext.ToListAsync());
+            Order applicationDbContext = await _context.Order
+                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id)
+                .Include(pcItem => pcItem.Computers)
+                .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
+                .SingleOrDefaultAsync();
+
+            if (applicationDbContext != null)
+            {
+                myList = applicationDbContext.Computers;
+            }
+
+            /////////////////////ESTA LINEA ES SOLO A MANERA DE EJEMPLO
+            string currentlyLoggedInUsername = User.Identity.Name;  //Por que puedo usar aqui el User, ¿¿¿donde está declarado???
+
+            dataToSendToView = LoadComputerVM(myList, ComponentList);
+            return View(dataToSendToView);
+        }
+
+        //Función que carga el objeto tipo ComputerVM para luego ser enviado a la vista
+        public List<ComputerVM> LoadComputerVM(List<Computer> myList, List<Component> ComponentList)
+        {
+            List<ComputerVM> dataToLoad = new List<ComputerVM>();
+            foreach (Computer item in myList)
+            {
+                ComputerVM itemComputerVM = new ComputerVM();
+                itemComputerVM.ImgUrl = item.ImgUrl;
+                itemComputerVM.Price = item.Price;
+                itemComputerVM.Qty = 1;
+                //itemComputerVM.TotalPrice = item.Price;
+                foreach (ComputerComponent subItem in item.ComputerComponents)
+                {
+                    foreach (var componentItem in ComponentList)
+                    {
+                        if (componentItem.Id == subItem.ComponentId)
+                        {
+                            itemComputerVM.Products.Add(componentItem.Name);
+                        }
+                    }
+                }
+                dataToLoad.Add(itemComputerVM);
+            }
+
+            return (dataToLoad);
         }
 
         // GET: Computers/Details/5
@@ -206,6 +247,14 @@ namespace ComputerApp.Controllers
             ComputerComponent computerComponent = new ComputerComponent();
             int orderId = 0;
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
+
+            if (myCurrentUser == null)
+            {
+                //return NotFound();
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return RedirectToAction(nameof(Index));
+            }
+
             Order orderAssociatedWUser = await _context.Order
                 .Where(order => order.AppUserId == myCurrentUser.Id)
                 .Include(pcComponent => pcComponent.Computers)
@@ -223,19 +272,11 @@ namespace ComputerApp.Controllers
                 order.IsCart = false;
                 order.AppUserId = myCurrentUser.Id;
                 orderId = await InsertOrderToDB(order);
-                //orderAssociatedWUser.ComputerComponents[0].Computer.OrderId = orderId;
-                //orderAssociatedWUser.ComputerComponents[0].Component.OrderId
             }
             else
             {
                 orderId = orderAssociatedWUser.Id;
-                //orderAssociatedWUser.ComputerComponents[0].Computer.OrderId = orderId;
             }
-
-
-
-
-            //myCurrentUser.Order = order;
 
             computer.Name = "Custom Computer";
             computer.Price = GetComputerTotalPrice(dataFromView);

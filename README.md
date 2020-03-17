@@ -49,3 +49,25 @@ using Microsoft.AspNetCore.Identity;
 _De no hacerlo el migration dará failed, y será muy fácil darse cuenta del error, corregirlo para poder hacer el migration_
 
 7. Hacer el migration *add-migration* y *update-database*
+
+## Inyectar en vistas para validar usuario .NetCore
+
+````C#
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<ComputerApp.Models.Computer>
+@inject UserManager<AppUser> UserManager
+@inject SignInManager<AppUser> SignInManager
+    
+<li class="nav-item">
+<a class="nav-link text-dark" asp-area="" asp-controller="Directors" asp-action="Index">Directores</a></li>
+@{
+	if (SignInManager.IsSignedIn(User))
+    {
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Alquilers" asp 				action="Index">Alquileres</a></li>
+    }
+}
+````
+
+
+
