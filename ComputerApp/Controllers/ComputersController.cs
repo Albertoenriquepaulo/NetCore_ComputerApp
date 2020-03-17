@@ -208,10 +208,10 @@ namespace ComputerApp.Controllers
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
             Order orderAssociatedWUser = await _context.Order
                 .Where(order => order.AppUserId == myCurrentUser.Id)
-                .Include(pcComponent => pcComponent.ComputerComponents)
-                    .ThenInclude(pc => pc.Computer)
-                .Include(pcComponent => pcComponent.ComputerComponents)
-                    .ThenInclude(component => component.Component)
+                .Include(pcComponent => pcComponent.Computers)
+                    .ThenInclude(pc => pc.ComputerComponents)
+                .Include(pcComponent => pcComponent.Computers)
+                    .ThenInclude(component => component.ComputerComponents)
                  .SingleOrDefaultAsync();
             //.ToListAsync();
 
@@ -229,7 +229,7 @@ namespace ComputerApp.Controllers
             else
             {
                 orderId = orderAssociatedWUser.Id;
-                orderAssociatedWUser.ComputerComponents[0].Computer.OrderId = orderId;
+                //orderAssociatedWUser.ComputerComponents[0].Computer.OrderId = orderId;
             }
 
 
