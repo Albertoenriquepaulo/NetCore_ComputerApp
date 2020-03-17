@@ -40,13 +40,21 @@ namespace ComputerApp.Controllers
 
             Order applicationDbContext = await _context.Order
                 .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id)
-                .Include(pcItem => pcItem.Computers)
-                .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
+                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+                    .ThenInclude(orderItem => orderItem.Order)
+                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+                    .ThenInclude(pcItem => pcItem.Computer)
+                        .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
                 .SingleOrDefaultAsync();
 
             if (applicationDbContext != null)
             {
-                myList = applicationDbContext.Computers;
+                foreach (var item in applicationDbContext.ComputerOrders)
+                {
+                    myList.Add(item.Computer);
+                }
+                //myList = applicationDbContext.Computer;
+                //myList = await _context.Computer.ToListAsync();
             }
 
             /////////////////////ESTA LINEA ES SOLO A MANERA DE EJEMPLO
@@ -92,7 +100,7 @@ namespace ComputerApp.Controllers
             }
 
             var computer = await _context.Computer
-                .Include(c => c.Order)
+                .Include(c => c.ComputerOrders)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (computer == null)
             {
@@ -122,7 +130,7 @@ namespace ComputerApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", computer.OrderId);
+            //ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", computer.OrderId);
             return View(computer);
         }
 
@@ -139,7 +147,7 @@ namespace ComputerApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", computer.OrderId);
+            //ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", computer.OrderId);
             return View(computer);
         }
 
@@ -175,7 +183,7 @@ namespace ComputerApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", computer.OrderId);
+            //ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", computer.OrderId);
             return View(computer);
         }
 
@@ -188,7 +196,7 @@ namespace ComputerApp.Controllers
             }
 
             var computer = await _context.Computer
-                .Include(c => c.Order)
+                //.Include(c => c.Order)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (computer == null)
             {
@@ -245,6 +253,7 @@ namespace ComputerApp.Controllers
             Order order = new Order();
             Computer computer = new Computer();
             ComputerComponent computerComponent = new ComputerComponent();
+
             int orderId = 0;
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
 
@@ -255,15 +264,26 @@ namespace ComputerApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            //BEFORE MIGRATING
+            //Order orderAssociatedWUser = await _context.Order
+            //    .Where(order => order.AppUserId == myCurrentUser.Id)
+            //    .Include(pcComponent => pcComponent.Computers)
+            //        .ThenInclude(pc => pc.ComputerComponents)
+            //    .Include(pcComponent => pcComponent.Computers)
+            //        .ThenInclude(component => component.ComputerComponents)
+            //     .SingleOrDefaultAsync();
+
+            //AFTER MIGRATING
             Order orderAssociatedWUser = await _context.Order
                 .Where(order => order.AppUserId == myCurrentUser.Id)
-                .Include(pcComponent => pcComponent.Computers)
-                    .ThenInclude(pc => pc.ComputerComponents)
-                .Include(pcComponent => pcComponent.Computers)
-                    .ThenInclude(component => component.ComputerComponents)
+                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+                    .ThenInclude(orderItem => orderItem.Order)
+                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+                    .ThenInclude(pcItem => pcItem.Computer)
+                        .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
                  .SingleOrDefaultAsync();
-            //.ToListAsync();
 
+            //.ToListAsync();
 
             if (orderAssociatedWUser == null)
             {
@@ -281,10 +301,12 @@ namespace ComputerApp.Controllers
             computer.Name = "Custom Computer";
             computer.Price = GetComputerTotalPrice(dataFromView);
             computer.IsDesktop = true;
-            computer.OrderId = orderId; //TODO: Debo generar un order ID
+            //TODO: AQUI ahora es una lista Order
+            //computer.OrderId = orderId; //TODO: Debo generar un order ID
             computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
             int computerId = await InsertComputerToDB(computer);
             int computerComponentId = await InsertComponentsToComputerComponentDB(dataFromView, computerId, orderId);
+            int computerOrderId = await InsertComputerOrderToDB(orderId, computerId);
 
             return RedirectToAction(nameof(Index));
 
@@ -339,7 +361,20 @@ namespace ComputerApp.Controllers
         {
             _context.Add(order);
             await _context.SaveChangesAsync();
+
             return order.Id;
+        }
+
+        //Inserta un elemento ComputerOrder nuevo en la bd ComputerOrder y devuelve el id de este elemento
+        public async Task<int> InsertComputerOrderToDB(int orderId, int computerId)
+        {
+            ComputerOrder computerOrder = new ComputerOrder();
+            computerOrder.OrderId = orderId;
+            computerOrder.ComputerId = computerId;
+            _context.Add(computerOrder);
+            await _context.SaveChangesAsync();
+
+            return computerOrder.Id;
         }
         //public async Task<int> InsertOrderToUser(Order order)
         //{
