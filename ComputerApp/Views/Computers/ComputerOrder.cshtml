@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ComputerApp.ViewModels;
+@*@model IEnumerable<ComputerApp.Models.Computer>*@
+@model IEnumerable<ComputerApp.ViewModels.ComputerVM>
+@inject UserManager<AppUser> UserManager
+@inject SignInManager<AppUser> SignInManager
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <a asp-action="BuildComputer">Build your own computer</a>
+</p>
+
+<table class="table">
+    @*<thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsDesktop)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ImgUrl)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order)
+                </th>
+                <th></th>
+            </tr>
+        </thead>*@
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImgUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Qty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Products)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <img src=@Html.DisplayFor(modelItem => item.ImgUrl) width="200" alt="Alternate Text" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Products)
+                    </td>
+                    <td>
+                        @string.Format("€{0:N2}", item.Price)
+                        @*@Html.DisplayFor(modelItem => item.Price)*@
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Qty)
+                    </td>
+                    <td>
+                        @string.Format("€{0:N2}", item.TotalPrice)
+                        @*@Html.DisplayFor(modelItem => item.TotalPrice)*@
+                    </td>
+                    @*<td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>*@
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
