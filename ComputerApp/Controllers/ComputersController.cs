@@ -209,9 +209,10 @@ namespace ComputerApp.Controllers
             Order orderAssociatedWUser = await _context.Order
                 .Where(order => order.AppUserId == myCurrentUser.Id)
                 .Include(pcComponent => pcComponent.ComputerComponents)
-                    .ThenInclude(component => component.Component)
+                    .ThenInclude(pc => pc.Computer)
                 .Include(pcComponent => pcComponent.ComputerComponents)
-                    .ThenInclude(pc => pc.Computer).SingleOrDefaultAsync();
+                    .ThenInclude(component => component.Component)
+                 .SingleOrDefaultAsync();
             //.ToListAsync();
 
 
