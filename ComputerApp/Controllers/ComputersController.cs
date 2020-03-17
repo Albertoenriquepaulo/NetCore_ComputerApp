@@ -199,17 +199,41 @@ namespace ComputerApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public void BuildComputer(string ProcessorId, string MemoryId, string Hdd, string Software)
-        public async Task BuildComputer(ComponentVM dataFromView)
+        public async Task<IActionResult> BuildComputer(ComponentVM dataFromView)
         {
-            Computer computer = new Computer();
-            AppUser myCurrentUser = await _userManager.GetUserAsync(User);
             Order order = new Order();
+            Computer computer = new Computer();
+            ComputerComponent computerComponent = new ComputerComponent();
+            int orderId = 0;
+            AppUser myCurrentUser = await _userManager.GetUserAsync(User);
+            Order orderAssociatedWUser = await _context.Order
+                .Where(order => order.AppUserId == myCurrentUser.Id)
+                .Include(pcComponent => pcComponent.ComputerComponents)
+                    .ThenInclude(component => component.Component)
+                .Include(pcComponent => pcComponent.ComputerComponents)
+                    .ThenInclude(pc => pc.Computer).SingleOrDefaultAsync();
+            //.ToListAsync();
 
-            order.Price += GetComputerTotalPrice(dataFromView);
-            order.Qty = 1;
-            order.IsCart = false;
 
-            int orderId = await InsertOrderToDB(order);
+            if (orderAssociatedWUser == null)
+            {
+                order.Price += GetComputerTotalPrice(dataFromView);
+                order.Qty = 1;
+                order.IsCart = false;
+                order.AppUserId = myCurrentUser.Id;
+                orderId = await InsertOrderToDB(order);
+                //orderAssociatedWUser.ComputerComponents[0].Computer.OrderId = orderId;
+                //orderAssociatedWUser.ComputerComponents[0].Component.OrderId
+            }
+            else
+            {
+                orderId = orderAssociatedWUser.Id;
+                orderAssociatedWUser.ComputerComponents[0].Computer.OrderId = orderId;
+            }
+
+
+
+
             //myCurrentUser.Order = order;
 
             computer.Name = "Custom Computer";
@@ -218,16 +242,9 @@ namespace ComputerApp.Controllers
             computer.OrderId = orderId; //TODO: Debo generar un order ID
             computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
             int computerId = await InsertComputerToDB(computer);
-            int computerComponentId = await InsertComponentsToComputerComponentDB(dataFromView, computerId);
+            int computerComponentId = await InsertComponentsToComputerComponentDB(dataFromView, computerId, orderId);
 
-
-
-            //TODO: Debo de colocar computer en la tabla Computer para tener un ID y añadir los componentes
-            //computer.ComputerComponents.Add();
-            //ComputerComponentsController crear = new ComputerComponentsController(_context);
-
-
-            //return View(ComponentsList);
+            return RedirectToAction(nameof(Index));
 
         }
         //END BUILD OWN COMPUTER
@@ -256,7 +273,7 @@ namespace ComputerApp.Controllers
 
             return computer.Id;
         }
-        public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId)
+        public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId, int orderId)
         {
             int[] idArray = new int[4];
             ComputerComponent computerComponent = new ComputerComponent();
@@ -267,6 +284,7 @@ namespace ComputerApp.Controllers
                 computerComponent = new ComputerComponent();
                 computerComponent.ComputerId = computerId;
                 computerComponent.ComponentId = item;
+                //computerComponent.OrderId = orderId;
                 _context.Add(computerComponent);
                 await _context.SaveChangesAsync();
             }

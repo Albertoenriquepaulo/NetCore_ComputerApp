@@ -31,7 +31,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (isAdmin)
+                        @if (isAdmin || true)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -50,6 +50,11 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white-50" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
+                            </li>
+
+                            //Delete This
+                            <li class="nav-item">
+                                <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
                             </li>
                         }
                         else

@@ -23,6 +23,6 @@ namespace ComputerApp.Models
         //Navigation Properties
         public int ComponentTypeId { get; set; }
         public CType ComponentType { get; set; }
-        public List<Computer> Computers { get; set; }
+        public List<ComputerComponent> ComputerComponents { get; set; }
     }
 }
