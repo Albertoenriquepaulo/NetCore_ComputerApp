@@ -28,6 +28,8 @@ namespace ComputerApp.Models
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
 
-        public List<Computer> Computers { get; set; }
+        //public List<Computer> Computers { get; set; }
+
+        public List<ComputerOrder> ComputerOrders { get; set; }
     }
 }
