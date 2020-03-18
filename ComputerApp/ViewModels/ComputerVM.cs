@@ -7,6 +7,7 @@ namespace ComputerApp.ViewModels
 {
     public class ComputerVM
     {
+        public int ComputerId { get; set; }
         public string ImgUrl { get; set; }
         public double Price { get; set; }
         public int Qty { get; set; }

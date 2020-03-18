@@ -67,7 +67,11 @@
                         <img src=@Html.DisplayFor(modelItem => item.ImgUrl) width="200" alt="Alternate Text" />
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Products)
+                        @foreach (string product in item.Products)
+                        {
+                            <p>@product</p>
+                        }
+                        @*@Html.DisplayFor(modelItem => item.Products)*@
                     </td>
                     <td>
                         @string.Format("€{0:N2}", item.Price)
@@ -80,11 +84,11 @@
                         @string.Format("€{0:N2}", item.TotalPrice)
                         @*@Html.DisplayFor(modelItem => item.TotalPrice)*@
                     </td>
-                    @*<td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>*@
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ComputerId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ComputerId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ComputerId">Delete</a>
+                    </td>
                 </tr>
             }
         }

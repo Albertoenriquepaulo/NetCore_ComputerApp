@@ -67,6 +67,7 @@ namespace ComputerApp.Controllers
             foreach (Computer item in myList)
             {
                 ComputerVM itemComputerVM = new ComputerVM();
+                itemComputerVM.ComputerId = item.Id;
                 itemComputerVM.ImgUrl = item.ImgUrl;
                 itemComputerVM.Price = item.Price;
                 itemComputerVM.Qty = 1;
