@@ -71,3 +71,71 @@ _De no hacerlo el migration dará failed, y será muy fácil darse cuenta del er
 
 
 
+## Añadir Clase as a Service (Singleton/Transient)
+
+Clase, preferiblemente crear una carpeta "Services"
+
+````C#
+public class OrderService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public OrderService(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+        }
+        public async Task<Order> GetOrderItem()
+        {
+            AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            Order order = await _context.Order
+                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id)
+                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+                    .ThenInclude(orderItem => orderItem.Order)
+                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+                    .ThenInclude(pcItem => pcItem.Computer)
+                        .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
+                .SingleOrDefaultAsync();
+
+            return order;
+        }
+    }
+````
+
+Añadir el servicio en "Startup.cs"
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+        {          
+            services.AddTransient<OrderService>();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddRazorPages();
+        }
+```
+
+Inyectarlo en el Controlador
+
+```C#
+public class ComputersController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly OrderService _orderService;
+
+        public ComputersController(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, OrderService orderService)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
+            _orderService = orderService;
+        }
+        etc...
+    }
+```
+

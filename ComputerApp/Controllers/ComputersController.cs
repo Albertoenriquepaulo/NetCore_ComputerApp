@@ -10,6 +10,7 @@ using ComputerApp.Models;
 using ComputerApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using ComputerApp.Services;
 
 
 //Video Roles y autorizaciones, usuario desde html min 20
@@ -21,12 +22,14 @@ namespace ComputerApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly OrderService _orderService;
 
-        public ComputersController(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public ComputersController(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, OrderService orderService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _orderService = orderService;
         }
 
         // GET: Computers
@@ -36,16 +39,9 @@ namespace ComputerApp.Controllers
             List<ComputerVM> dataToSendToView = new List<ComputerVM>();
             List<Component> ComponentList = await _context.Component.ToListAsync();
             AppUser myCurrentUser = await _userManager.GetUserAsync(User);
-            //var applicationDbContext = _context.Computer.Include(c => c.Order);
 
-            Order applicationDbContext = await _context.Order
-                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id)
-                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
-                    .ThenInclude(orderItem => orderItem.Order)
-                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
-                    .ThenInclude(pcItem => pcItem.Computer)
-                        .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
-                .SingleOrDefaultAsync();
+            //Obtengo la orden asociada al Usuario
+            Order applicationDbContext = await _orderService.GetOrderItem();
 
             if (applicationDbContext != null)
             {
@@ -274,14 +270,15 @@ namespace ComputerApp.Controllers
             //     .SingleOrDefaultAsync();
 
             //AFTER MIGRATING
-            Order orderAssociatedWUser = await _context.Order
-                .Where(order => order.AppUserId == myCurrentUser.Id)
-                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
-                    .ThenInclude(orderItem => orderItem.Order)
-                .Include(pcOrderItem => pcOrderItem.ComputerOrders)
-                    .ThenInclude(pcItem => pcItem.Computer)
-                        .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
-                 .SingleOrDefaultAsync();
+            //Order orderAssociatedWUser = await _context.Order
+            //    .Where(order => order.AppUserId == myCurrentUser.Id)
+            //    .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+            //        .ThenInclude(orderItem => orderItem.Order)
+            //    .Include(pcOrderItem => pcOrderItem.ComputerOrders)
+            //        .ThenInclude(pcItem => pcItem.Computer)
+            //            .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
+            //     .SingleOrDefaultAsync();
+            Order orderAssociatedWUser = await _orderService.GetOrderItem();
 
             //.ToListAsync();
 
