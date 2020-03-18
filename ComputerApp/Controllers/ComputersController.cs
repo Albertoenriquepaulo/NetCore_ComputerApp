@@ -302,10 +302,52 @@ namespace ComputerApp.Controllers
                 return NotFound();
             }
 
-            return View(new BuildComputerEditVM(componentTypes, components));
+            return View(new BuildComputerEditVM(componentTypes, components, (int)id));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //public void BuildComputer(string ProcessorId, string MemoryId, string Hdd, string Software)
+        public async Task<IActionResult> BuildComputerEdit(int id, ComponentVM dataFromView)
+        {
+            Type type = typeof(ComponentVM);
+            int NumberOfRecords = type.GetProperties().Length;
+            int[] idArray = new int[NumberOfRecords];
 
+            Computer computer = await _context.Computer
+                                        .Where(computer => computer.Id == id)
+                                        .Include(component => component.ComputerComponents)
+                                        .SingleOrDefaultAsync();
+            if (id != computer.Id)
+            {
+                return NotFound();
+            }
+            computer.Price = GetComputerTotalPrice(dataFromView);
+            idArray[0] = dataFromView.HddId; idArray[1] = dataFromView.SoftwareId; idArray[2] = dataFromView.ProcessorId; idArray[3] = dataFromView.MemoryId; idArray[4] = dataFromView.OSId;
+            int i = 0;
+            foreach (var item in computer.ComputerComponents)
+            {
+                item.ComponentId = idArray[i++];
+            }
+
+            try
+            {
+                _context.Update(computer);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ComputerExists(computer.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
         //-----------------------------------------END BUILD OWN COMPUTER
         public double GetComputerTotalPrice(ComponentVM dataFromView)

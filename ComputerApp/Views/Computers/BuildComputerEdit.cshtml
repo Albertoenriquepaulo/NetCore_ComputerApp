@@ -12,8 +12,9 @@
 <div>
     <div class="row">
         <div class="col-md-4">
-            <form asp-action="BuildComputer">
+            <form asp-action="BuildComputerEdit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="@Model.ComputerId" />
                 @foreach (var item in Model.ComponentTypes)
                 {
                     string CName = @item.Name;
