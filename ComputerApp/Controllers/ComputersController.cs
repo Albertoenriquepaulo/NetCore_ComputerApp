@@ -219,23 +219,13 @@ namespace ComputerApp.Controllers
             return _context.Computer.Any(e => e.Id == id);
         }
 
-        //BUILD OWN COMPUTER
+        //-----------------------------------------BUILD OWN COMPUTER
+        // GET: Computers/BuildComputer/5
         public async Task<IActionResult> BuildComputer()
         {
             //Obtengo el objeto cuyo tipo es CPU, para con su ID obtener todas las posibles opciones de CPU
             List<CType> ComponentsList = await _context.CType.Include(c => c.Components).ToListAsync();
 
-
-            //int idToSearch = _context.CType.Where(t => t.Name == "CPU").FirstOrDefault<CType>().Id;//.Include(c => c.ComponentType);
-
-            //var appDbContextComponent = _context.Component.Include(c => c.ComponentType);
-            //var prueba = appDbContextComponent.Where(t => t.ComponentType.Id == idToSearch);
-            //Esta linea de abajo hace lo mismo que las dos linea de arriba
-            //Obtengo todos los tipos de CPU que existen
-            //var appDbContextComponent = _context.Component.Include(c => c.ComponentType).Where(t => t.ComponentType.Id == idToSearch);
-            //List<Component> objectToSendToView = await appDbContextComponent.ToListAsync();
-
-            //return View(objectToSendToView);
             return View(ComponentsList);
         }
 
@@ -261,24 +251,6 @@ namespace ComputerApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            //BEFORE MIGRATING
-            //Order orderAssociatedWUser = await _context.Order
-            //    .Where(order => order.AppUserId == myCurrentUser.Id)
-            //    .Include(pcComponent => pcComponent.Computers)
-            //        .ThenInclude(pc => pc.ComputerComponents)
-            //    .Include(pcComponent => pcComponent.Computers)
-            //        .ThenInclude(component => component.ComputerComponents)
-            //     .SingleOrDefaultAsync();
-
-            //AFTER MIGRATING
-            //Order orderAssociatedWUser = await _context.Order
-            //    .Where(order => order.AppUserId == myCurrentUser.Id)
-            //    .Include(pcOrderItem => pcOrderItem.ComputerOrders)
-            //        .ThenInclude(orderItem => orderItem.Order)
-            //    .Include(pcOrderItem => pcOrderItem.ComputerOrders)
-            //        .ThenInclude(pcItem => pcItem.Computer)
-            //            .ThenInclude(pcComponentItem => pcComponentItem.ComputerComponents)
-            //     .SingleOrDefaultAsync();
             Order orderAssociatedWUser = await _orderService.GetOrderItem();
 
             //.ToListAsync();
@@ -299,8 +271,6 @@ namespace ComputerApp.Controllers
             computer.Name = "Custom Computer";
             computer.Price = GetComputerTotalPrice(dataFromView);
             computer.IsDesktop = true;
-            //TODO: AQUI ahora es una lista Order
-            //computer.OrderId = orderId; //TODO: Debo generar un order ID
             computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
             int computerId = await InsertComputerToDB(computer);
             int computerComponentId = await InsertComponentsToComputerComponentDB(dataFromView, computerId, orderId);
@@ -309,7 +279,35 @@ namespace ComputerApp.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-        //END BUILD OWN COMPUTER
+
+        // GET: Computers/BuildComputer/5
+        public async Task<IActionResult> BuildComputerEdit(int? id)
+        {
+            List<ComputerComponent> components = new List<ComputerComponent>();
+
+            //Obtengo todos los componentes que conforman el custom computer
+            components = await _context.ComputerComponent
+                                .Include(component => component.Component)
+                                .Where(computer => computer.ComputerId == id)
+                                .ToListAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            //Obtengo todos los tipos de componentes, esto para crear los list box por cada tipo
+            List<CType> componentTypes = await _context.CType.Include(c => c.Components).ToListAsync();
+
+            if (componentTypes == null)
+            {
+                return NotFound();
+            }
+
+            return View(new BuildComputerEditVM(componentTypes, components));
+        }
+
+
+
+        //-----------------------------------------END BUILD OWN COMPUTER
         public double GetComputerTotalPrice(ComponentVM dataFromView)
         {
             Type type = typeof(ComponentVM);
@@ -337,9 +335,12 @@ namespace ComputerApp.Controllers
         }
         public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId, int orderId)
         {
-            int[] idArray = new int[4];
+            Type type = typeof(ComponentVM);
+            int NumberOfRecords = type.GetProperties().Length;
+            int[] idArray = new int[NumberOfRecords];
+
             ComputerComponent computerComponent = new ComputerComponent();
-            idArray[0] = component.HddId; idArray[1] = component.SoftwareId; idArray[2] = component.ProcessorId; idArray[3] = component.MemoryId;
+            idArray[0] = component.HddId; idArray[1] = component.SoftwareId; idArray[2] = component.ProcessorId; idArray[3] = component.MemoryId; idArray[4] = component.OSId;
             //computerComponent.ComputerId = computerId;
             foreach (var item in idArray)
             {
