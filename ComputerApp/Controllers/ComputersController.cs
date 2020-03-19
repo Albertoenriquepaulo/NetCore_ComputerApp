@@ -49,15 +49,27 @@ namespace ComputerApp.Controllers
                 {
                     myList.Add(item.Computer);
                 }
-                //myList = applicationDbContext.Computer;
-                //myList = await _context.Computer.ToListAsync();
+                foreach (Computer item in myList)
+                {
+                    await UpdateComputerPrice(item);
+                }
             }
-
-            /////////////////////ESTA LINEA ES SOLO A MANERA DE EJEMPLO
-            string currentlyLoggedInUsername = User.Identity.Name;  //Por que puedo usar aqui el User, ¿¿¿donde está declarado???
 
             dataToSendToView = LoadComputerVM(myList, ComponentList);
             return View(dataToSendToView);
+        }
+
+        //Se actualiza el price en la tabla computer, recibe el objeto computer y actualiza el valor Price
+        public async Task UpdateComputerPrice(Computer computer)
+        {
+            double price = 0;
+            List<Component> Components = await _context.Component.ToListAsync();
+            List<ComputerComponent> ComputerComponents = await _context.ComputerComponent.Where(computerItem => computerItem.ComputerId == computer.Id).ToListAsync();
+            foreach (var computerComponent in ComputerComponents)
+            {
+                price += computerComponent.Component.Price;
+            }
+            computer.Price = price;
         }
 
         //Función que carga el objeto tipo ComputerVM para luego ser enviado a la vista
