@@ -190,13 +190,23 @@ namespace ComputerApp.Controllers
             var computer = await _context.Computer
                                 .Where(computerItem => computerItem.Id == id)
                                 .Include(computerOrderItem => computerOrderItem.ComputerOrders).FirstOrDefaultAsync();
+
+            //El siguiente if nos asegura eliminar la Customm Computer de la tabla Computer
+            //Pero si la pc a eliminar no es custom se debe eliminar la referencia de la tabla ComputerOrder
             if (computer.Name == nameOfCustomComputer)
             {
                 _context.Computer.Remove(computer);
-                await _context.SaveChangesAsync();
+
+            }
+            else
+            {
+                var computerOrder = await _context.ComputerOrder.FindAsync(computer.ComputerOrders[0].Id);
+                _context.ComputerOrder.Remove(computerOrder);
             }
 
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool ComputerExists(int id)

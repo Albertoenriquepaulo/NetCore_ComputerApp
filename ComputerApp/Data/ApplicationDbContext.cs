@@ -19,5 +19,6 @@ namespace ComputerApp.Data
         public DbSet<ComputerApp.Models.ComputerComponent> ComputerComponent { get; set; }
         public DbSet<ComputerApp.Models.CType> CType { get; set; }
         public DbSet<ComputerApp.Models.Order> Order { get; set; }
+        public DbSet<ComputerApp.Models.ComputerOrder> ComputerOrder { get; set; }
     }
 }
