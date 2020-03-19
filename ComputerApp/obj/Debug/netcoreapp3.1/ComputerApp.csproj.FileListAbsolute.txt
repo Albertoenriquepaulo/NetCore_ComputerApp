@@ -414,8 +414,6 @@ D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\bin\Debug\netcoreap
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\staticwebassets\ComputerApp.StaticWebAssets.Manifest.cache
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\staticwebassets\ComputerApp.StaticWebAssets.xml
-D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.MvcApplicationPartsAssemblyInfo.cs
-D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.MvcApplicationPartsAssemblyInfo.cache
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.RazorAssemblyInfo.cache
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.RazorAssemblyInfo.cs
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.AssemblyInfoInputs.cache
@@ -510,3 +508,10 @@ D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreap
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.pdb
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.csprojAssemblyReference.cache
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Computers\BuildComputerEdit.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\bin\Debug\netcoreapp3.1\Antlr3.Runtime.dll
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\bin\Debug\netcoreapp3.1\System.Web.Optimization.dll
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\bin\Debug\netcoreapp3.1\Microsoft.Web.Infrastructure.dll
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\bin\Debug\netcoreapp3.1\WebGrease.dll
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.MvcApplicationPartsAssemblyInfo.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\ComputerApp.MvcApplicationPartsAssemblyInfo.cache
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Home\Desktop.cshtml.g.cs

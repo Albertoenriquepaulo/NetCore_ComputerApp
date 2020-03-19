@@ -1,0 +1,35 @@
+﻿@model List<Computer>
+@{
+    ViewData["Title"] = "Desktop";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Desktop</h1>
+
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        @*<div class="card" style="width: 18rem;">*@
+        <div class="card ml-5 text-center bg-transparent border-0 col-md-6" style="width: 20rem;">
+            <img src="https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg" class="card-img-top" alt="Show details for build your own computer" height="250">
+            <div class="card-body">
+                <h5 class="card-title"><a href="#">Build your own computer</a></h5>
+                @*<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>*@
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+    @foreach (Computer computerItem in Model)
+    {
+        <div class="col-md-6 col-sm-6">
+            @*<div class="card" style="width: 18rem;">*@
+            <div class="card ml-5 text-center bg-transparent border-0 col-md-6" style="width: 20rem;">
+                <img src="@computerItem.ImgUrl" class="card-img-top" alt="Show details for build your own computer" height="280">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">@computerItem.Name</h5>
+                    <p class="card-text">Price: <strong>@computerItem.Price</strong></p>
+                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
