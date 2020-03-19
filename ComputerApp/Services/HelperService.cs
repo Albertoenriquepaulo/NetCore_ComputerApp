@@ -1,0 +1,138 @@
+﻿using ComputerApp.Data;
+using ComputerApp.Models;
+using ComputerApp.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ComputerApp.Services
+{
+    public class HelperService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public HelperService(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public double GetComputerTotalPrice(ComponentVM dataFromView)
+        {
+            Type type = typeof(ComponentVM);
+            int NumberOfRecords = type.GetProperties().Length;
+            int[] idArray = new int[NumberOfRecords];
+            double totalPrice = 0;
+            Component component = new Component();
+            idArray[0] = dataFromView.HddId; idArray[1] = dataFromView.SoftwareId; idArray[2] = dataFromView.ProcessorId; idArray[3] = dataFromView.MemoryId; idArray[4] = dataFromView.OSId;
+            foreach (int item in idArray)
+            {
+                component = _context.Component.Where(c => c.Id == item).FirstOrDefault<Component>();
+                totalPrice += component.Price;
+            }
+            return (totalPrice);
+        }
+
+        //Inserta un elemento Computer nuevo en la bd Computer y devuelve el id de este elemento
+        //public async Task<int> CreateFromCode([Bind("Id,Name,Price,IsDesktop,ImgUrl,OrderId")] Computer computer)
+        public async Task<int> InsertComputerToDB(Computer computer)
+        {
+            _context.Add(computer);
+            await _context.SaveChangesAsync();
+
+            return computer.Id;
+        }
+        public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId, int orderId)
+        {
+            Type type = typeof(ComponentVM);
+            int NumberOfRecords = type.GetProperties().Length;
+            int[] idArray = new int[NumberOfRecords];
+
+            ComputerComponent computerComponent = new ComputerComponent();
+            idArray[0] = component.HddId; idArray[1] = component.SoftwareId; idArray[2] = component.ProcessorId; idArray[3] = component.MemoryId; idArray[4] = component.OSId;
+            //computerComponent.ComputerId = computerId;
+            foreach (var item in idArray)
+            {
+                computerComponent = new ComputerComponent();
+                computerComponent.ComputerId = computerId;
+                computerComponent.ComponentId = item;
+                //computerComponent.OrderId = orderId;
+                _context.Add(computerComponent);
+                await _context.SaveChangesAsync();
+            }
+
+            return computerComponent.Id;
+        }
+
+        //Inserta un elemento Order nuevo en la bd Order y devuelve el id de este elemento
+        public async Task<int> InsertOrderToDB(Order order)
+        {
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+
+            return order.Id;
+        }
+
+        //Inserta un elemento ComputerOrder nuevo en la bd ComputerOrder y devuelve el id de este elemento
+        public async Task<int> InsertComputerOrderToDB(int orderId, int computerId)
+        {
+            ComputerOrder computerOrder = new ComputerOrder();
+            computerOrder.OrderId = orderId;
+            computerOrder.ComputerId = computerId;
+            _context.Add(computerOrder);
+            await _context.SaveChangesAsync();
+
+            return computerOrder.Id;
+        }
+
+        //Se actualiza el price en la tabla computer, recibe el objeto computer y actualiza el valor Price
+        public async Task UpdateComputerPrice(Computer computer)
+        {
+            double price = 0;
+            List<Component> Components = await _context.Component.ToListAsync();
+            List<ComputerComponent> ComputerComponents = await _context.ComputerComponent.Where(computerItem => computerItem.ComputerId == computer.Id).ToListAsync();
+            foreach (var computerComponent in ComputerComponents)
+            {
+                price += computerComponent.Component.Price;
+            }
+            computer.Price = price;
+        }
+
+        //Función que carga el objeto tipo ComputerVM para luego ser enviado a la vista
+        public List<ComputerVM> LoadComputerVM(List<Computer> myList, List<Component> ComponentList)
+        {
+            List<ComputerVM> dataToLoad = new List<ComputerVM>();
+            foreach (Computer item in myList)
+            {
+                ComputerVM itemComputerVM = new ComputerVM();
+                itemComputerVM.ComputerId = item.Id;
+                itemComputerVM.ImgUrl = item.ImgUrl;
+                itemComputerVM.Price = item.Price;
+                itemComputerVM.Qty = 1;
+                //itemComputerVM.TotalPrice = item.Price;
+                foreach (ComputerComponent subItem in item.ComputerComponents)
+                {
+                    foreach (var componentItem in ComponentList)
+                    {
+                        if (componentItem.Id == subItem.ComponentId)
+                        {
+                            itemComputerVM.Products.Add(componentItem.Name);
+                        }
+                    }
+                }
+                dataToLoad.Add(itemComputerVM);
+            }
+
+            return (dataToLoad);
+        }
+    }
+}

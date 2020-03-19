@@ -9,6 +9,9 @@ using ComputerApp.Models;
 using ComputerApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ComputerApp.Models.ShoppingCart;
+using ComputerApp.Services;
+using ComputerApp.ViewModels;
 
 namespace ComputerApp.Controllers
 {
@@ -18,13 +21,19 @@ namespace ComputerApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly OrderService _orderService;
+        private readonly HelperService _helperService;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<AppUser> userManager,
+                                SignInManager<AppUser> signInManager, OrderService orderService, HelperService helperService)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _orderService = orderService;
+            _helperService = helperService;
+
         }
 
         public IActionResult Index()
@@ -66,6 +75,58 @@ namespace ComputerApp.Controllers
                 }
             }
             return Computers;
+        }
+
+        public async Task<ActionResult> AddToCart(int computerId)
+        {
+            List<Item> cart = new List<Item>();
+
+            ComputerVM dataFromView = new ComputerVM();
+
+            int orderId = 0;
+            Order order = new Order();
+            AppUser myCurrentUser = await _userManager.GetUserAsync(User);
+
+            if (myCurrentUser == null)
+            {
+                //return NotFound();
+                return RedirectToAction(nameof(Index));
+            }
+
+            Order orderAssociatedWUser = await _orderService.GetOrderItem();
+            Computer computer = await _context.Computer.Include(computerOrderItem => computerOrderItem.ComputerOrders)
+                                        .Where(computerItem => computerItem.Id == computerId)
+                                        .FirstOrDefaultAsync();
+
+            dataFromView.ComputerId = computerId;
+            dataFromView.ImgUrl = computer.ImgUrl;
+            dataFromView.Price = computer.Price;
+            dataFromView.Qty = 1;
+
+            if (orderAssociatedWUser == null)
+            {
+                //order.Price += _helperService.GetComputerTotalPrice(dataFromView);
+                order.Price = computer.Price;
+                order.Qty = 1;
+                order.IsCart = true;
+                order.AppUserId = myCurrentUser.Id;
+                orderId = await _helperService.InsertOrderToDB(order);
+            }
+            else
+            {
+                orderId = orderAssociatedWUser.Id;
+                order.Price = computer.Price;
+                //TODO: Aqui debo actualizar el Precio de la Order
+            }
+
+            int computerOrderId = await _helperService.InsertComputerOrderToDB(orderId, computerId);
+
+            //cart.Add(new Item()
+            //{
+            //    Computer = computer,
+            //    Qty = 1
+            //});
+            return RedirectToAction(nameof(Desktop), "Computer");//return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

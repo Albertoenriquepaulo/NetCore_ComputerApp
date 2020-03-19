@@ -33,7 +33,7 @@
                     <h5 class="card-title text-secondary text-justify">@computerItem.Name</h5>
                     <p class="card-text">Price: <strong>@computerItem.Price</strong></p>
                     <div class="card-footer text-center">
-                        <a class="btn btn-secondary btn-lg btn-block text-truncate mt-auto btn-primary " style="margin-top: auto;">Add to Cart</a>
+                        <a class="btn btn-secondary btn-lg btn-block text-truncate mt-auto btn-primary " style="margin-top: auto;" asp-route-computerId="@computerItem.Id" asp-action="AddToCart">Add to Cart</a>
                     </div>
                 </div>
             </div>
