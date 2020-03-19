@@ -37,25 +37,16 @@ namespace ComputerApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Desktop()
+        public async Task<IActionResult> Desktop(bool? isDesktop)
         {
+            if (isDesktop == null)
+            {
+                return NotFound();
+            }
             List<Computer> myComputers = new List<Computer>();
-
-            //foreach (Computer computerItem in computersFromContext)
-            //{
-            //    if (ComputerNames.Contains(computerItem.Name))
-            //    {
-            //        myComputers.Add(computerItem);
-            //    }
-            //}
-            myComputers = await BuildComputerList(true);
-
-            //var Computers1 = await _context.Computer.Select(m => new { m.Name, m.Id, m.Price }).Distinct().ToListAsync();
-            //var Computers2 = Computers1.Distinct().ToList();
-            //List<Computer> Computerss = await _context.Computer.ToListAsync();//Distinct(x=> x.Name).ToListAsync();
-            //Computerss = Computerss.Distinct().ToList();
-            //List<Computer> Computersss = _context.Computer.Select( m => new Computer() ).Distinct();
-
+            // Para decirle a la vista que no ofrezca la opcion "Build your own Computer" cuando sea Laptop
+            ViewData["isDesktop"] = isDesktop;
+            myComputers = await BuildComputerList((bool)isDesktop);
             return View(myComputers);
         }
 
