@@ -45,9 +45,9 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">
+        <button type="submit" class="btn btn-outline-danger">
             <i class="far fa-trash-alt"></i>
         </button>
-        <a asp-action="Index"><i class="fas fa-arrow-left"></i></a>
+        <button asp-action="Index" class="btn btn-outline-primary"><i class="fas fa-arrow-left"></i></button>
     </form>
 </div>

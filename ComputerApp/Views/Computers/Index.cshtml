@@ -93,19 +93,19 @@
                         @*@Html.DisplayFor(modelItem => item.TotalPrice)*@
                     </td>
                     <td>
-                        @if (item.Products.Count == 0)
-                        {
-                            <a class="text-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
-                        }
-                        else
-                        {
-                            <a asp-action="BuildComputerEdit" asp-route-id="@item.ComputerId"><i class="fas fa-edit"></i></a> @*@:|*@
-                            <a asp-action="Details" asp-route-id="@item.ComputerId"><i class="fas fa-info-circle"></i></a> @*@:|*@
-                            <a class="text-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
-                        }
-                        @*<a asp-action="BuildComputerEdit" asp-route-id="@item.ComputerId">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.ComputerId">Details</a> |*@
+                        <div>
+                            @if (item.Products.Count == 0)
+                            {
+                                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-primary" asp-action="BuildComputerEdit" asp-route-id="@item.ComputerId"><i class="fas fa-edit"></i></a>
+                                <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ComputerId"><i class="fas fa-info-circle"></i></a>
+                                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
 
+                            }
+                        </div>
                     </td>
                 </tr>
             }
