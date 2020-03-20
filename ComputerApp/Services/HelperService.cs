@@ -17,6 +17,15 @@ namespace ComputerApp.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        public string CUSTOM_COMPUTER_NAME
+        {
+            get
+            {
+                return "Custom Computer";
+            }
+        }
+
+        //public  MyProperty { get; set; }
 
         public HelperService(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
@@ -134,5 +143,16 @@ namespace ComputerApp.Services
 
             return (dataToLoad);
         }
+
+        // Contruye una lista de computadoras exeptuando la "Custom Computer" y si es Desktop or Laptop
+        public async Task<List<Computer>> BuildComputerList(bool isDesktop)
+        {
+            List<Computer> computersFromContext = await _context.Computer.ToListAsync();
+            List<Computer> Computers = computersFromContext
+                                        .FindAll(computer => (computer.Name != CUSTOM_COMPUTER_NAME && computer.IsDesktop == isDesktop));
+
+            return Computers;
+        }
+
     }
 }

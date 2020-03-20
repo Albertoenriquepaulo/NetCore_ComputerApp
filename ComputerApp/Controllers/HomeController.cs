@@ -55,26 +55,8 @@ namespace ComputerApp.Controllers
             List<Computer> myComputers = new List<Computer>();
             // Para decirle a la vista que no ofrezca la opcion "Build your own Computer" cuando sea Laptop
             ViewData["isDesktop"] = isDesktop;
-            myComputers = await BuildComputerList((bool)isDesktop);
+            myComputers = await _helperService.BuildComputerList((bool)isDesktop);
             return View(myComputers);
-        }
-
-        // Contruye una lista de computadoras exeptuando la "Custom Computer" y si es Desktop or Laptop
-        public async Task<List<Computer>> BuildComputerList(bool isDesktop)
-        {
-            List<Computer> computersFromContext = await _context.Computer.ToListAsync();
-            List<Computer> Computers = new List<Computer>();
-            List<string> ComputerNames = await _context.Computer.Select(m => m.Name).Distinct().ToListAsync();
-            ComputerNames.RemoveAll(u => u.StartsWith("Custom"));
-
-            foreach (Computer computerItem in computersFromContext)
-            {
-                if (ComputerNames.Contains(computerItem.Name) && computerItem.IsDesktop == isDesktop)
-                {
-                    Computers.Add(computerItem);
-                }
-            }
-            return Computers;
         }
 
         public async Task<ActionResult> AddToCart(int computerId)
@@ -121,11 +103,6 @@ namespace ComputerApp.Controllers
 
             int computerOrderId = await _helperService.InsertComputerOrderToDB(orderId, computerId);
 
-            //cart.Add(new Item()
-            //{
-            //    Computer = computer,
-            //    Qty = 1
-            //});
             return RedirectToAction(nameof(Desktop), "Computer");//return View();
         }
 
@@ -134,7 +111,5 @@ namespace ComputerApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-
     }
 }

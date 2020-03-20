@@ -1,0 +1,42 @@
+Component Price por component
+computer Price
+Order Price 
+
+
+Acer Aspire TC-885-ACCFLi5
+https://images-na.ssl-images-amazon.com/images/I/61UgXsi%2BmcL._AC_SL1500_.jpg
+
+
+Dell Inspiron 3471, Intel Core i3, Intel UHD Graphics
+https://images-na.ssl-images-amazon.com/images/I/61S-V8cqufL._AC_SL1500_.jpg
+
+Dell 3020 Desktop Computer PC, Intel i5 3.2GHz
+https://images-na.ssl-images-amazon.com/images/I/81MbxoYFo7L._AC_SL1500_.jpg
+
+<div class="card ml-5 text-center bg-transparent border-0 col-md-6" style= "width: 20rem;">
+
+
+LAPTOP
+
+Lenovo Chromebook S330 Laptop 14-Inch FHD (1920 x 1080), procesador MediaTek MT8173C, Negro de negocios 
+https://images-na.ssl-images-amazon.com/images/I/612Jm%2BF5RmL._AC_SL1500_.jpg
+
+Acer Aspire 5 Slim Laptop, Plateado
+https://images-na.ssl-images-amazon.com/images/I/71sesDsw95L._AC_SL1500_.jpg
+
+MSI Creator 15M A9SE-043 15.6" 120Hz FHD Creator Laptop Intel Core 15.6" 1366 x 768Pixeles ordenador portatil
+https://images-na.ssl-images-amazon.com/images/I/716KJQZ1RlL._AC_SL1500_.jpg
+
+Apple MacBook Pro, Gris espacial
+https://images-na.ssl-images-amazon.com/images/I/71L2iBSyyOL._AC_SL1500_.jpg
+
+
+483064759752
+
+Para eliminar el computador disponible
+Tabla ComputerOrder, eliminar registro correspondiente a
+computer ID de la orden OrderID
+OrderID computerID 
+36	79
+
+

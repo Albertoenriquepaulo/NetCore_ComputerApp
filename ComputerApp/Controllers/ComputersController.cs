@@ -61,6 +61,7 @@ namespace ComputerApp.Controllers
                 }
             }
 
+            ViewData["myList"] = myList;
             dataToSendToView = _helperService.LoadComputerVM(myList, ComponentList);
             return View(dataToSendToView);
         }
@@ -185,7 +186,7 @@ namespace ComputerApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            string nameOfCustomComputer = "Custom Computer";
+            string nameOfCustomComputer = _helperService.CUSTOM_COMPUTER_NAME;//"Custom Computer";
             //var computer = await _context.Computer.FindAsync(id);
             var computer = await _context.Computer
                                 .Where(computerItem => computerItem.Id == id)
@@ -263,7 +264,7 @@ namespace ComputerApp.Controllers
                 orderId = orderAssociatedWUser.Id;
             }
 
-            computer.Name = "Custom Computer";
+            computer.Name = _helperService.CUSTOM_COMPUTER_NAME;
             computer.Price = _helperService.GetComputerTotalPrice(dataFromView);
             computer.IsDesktop = true;
             computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
