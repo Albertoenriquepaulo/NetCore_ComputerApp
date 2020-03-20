@@ -80,11 +80,6 @@ namespace ComputerApp.Controllers
                                         .Where(computerItem => computerItem.Id == computerId)
                                         .FirstOrDefaultAsync();
 
-            //dataFromView.ComputerId = computerId;
-            //dataFromView.ImgUrl = computer.ImgUrl;
-            //dataFromView.Price = computer.Price;
-            //dataFromView.Qty = 1;
-
             dataFromView = new ComputerVM
             {
                 ComputerId = computerId,
@@ -111,7 +106,7 @@ namespace ComputerApp.Controllers
 
             int computerOrderId = await _helperService.InsertComputerOrderToDB(orderId, computerId);
 
-            return RedirectToAction(nameof(Desktop), "Computer");//return View();
+            return RedirectToAction(nameof(Desktop), new { isDesktop = computer.IsDesktop });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
