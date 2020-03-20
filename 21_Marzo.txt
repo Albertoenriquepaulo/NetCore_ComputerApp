@@ -1,0 +1,28 @@
+474-947-884
+
+¿Es el mismo programador que hace el test?
+
+Muck
+
+Test de todos y cada uno de los metodos
+
+TDD, hay que estar muy claros de lo que necesitas.
+
+Si en computerOrder existe un ComputerId con el mismo computerId: 
+Deberia añadirle un Qty a la tabla Computer
+
+dado el usuario obtengo el OrderId
+
+Obtenido el oderId,
+Se saca de la taba ComputerOrder todos los registros con
+ese orderId , Asi obtenemos los computerId
+
+Por cada computerId buscamos precio y sumamos, y asi tenemos el total de la order
+
+ID de reunión: 532 247 274
+Contraseña: 392939
+
+BAFB
+
+https://images-na.ssl-images-amazon.com/images/I/71cpMR89G0L._AC_SL1200_.jpg
+

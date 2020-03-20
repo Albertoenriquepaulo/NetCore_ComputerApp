@@ -56,6 +56,7 @@ namespace ComputerApp.Controllers
             // Para decirle a la vista que no ofrezca la opcion "Build your own Computer" cuando sea Laptop
             ViewData["isDesktop"] = isDesktop;
             myComputers = await _helperService.BuildComputerList((bool)isDesktop);
+
             return View(myComputers);
         }
 

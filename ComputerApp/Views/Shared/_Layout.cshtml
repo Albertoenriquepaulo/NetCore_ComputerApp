@@ -64,7 +64,7 @@
                             </li>
                         }
                         <li class="dropdown">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Cart(3) <b class="caret"></b></a>
+                            <a data-toggle="dropdown" class="btn btn-light dropdown-toggle" href="#"><i class="fas fa-shopping-cart"></i>&nbsp;(@ViewData["cartItems"])<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 @*@if (Session["cart"] != null)
                                     {
@@ -76,6 +76,7 @@
                                 <li><a href="#">Uno</a></li>
                                 <li><a href="#">Dos</a></li>
                                 <li><a href="#">Tres</a></li>
+                                <li><a href="#">@ViewData["cartItems"]</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#">IT</a></li>
                             </ul>

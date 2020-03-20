@@ -76,7 +76,7 @@
                         }
                         @foreach (string product in item.Products)
                         {
-                            <p>@product</p>
+                            <p style="line-height: 30%;">@product</p>
                         }
                         @*@Html.DisplayFor(modelItem => item.Products)*@
 
@@ -108,8 +108,14 @@
                         </div>
                     </td>
                 </tr>
+
             }
         }
-
+        
     </tbody>
 </table>
+<hr />
+<p class="text-right">
+    <strong>Total Price:</strong>&nbsp;&nbsp;@string.Format("€{0:N2}", ViewData["totalPrice"])
+</p>
+<hr />

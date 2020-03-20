@@ -61,8 +61,22 @@ namespace ComputerApp.Controllers
                 }
             }
 
+            //TODO: Cantidad a imprimir en el carrito
+            int cantidad = myList.Count();
+            ViewData["cartItems"] = cantidad;
+
+            //Filtrando la lista, quitando sus elementos repetidos, ya que si hay un elemnto repetido
+            //debo colocarlo en cantidad
+            myList = myList.GroupBy(computerItem => computerItem.Id)
+                                                .Select(pc => pc.First())
+                                                .ToList();
             ViewData["myList"] = myList;
-            dataToSendToView = _helperService.LoadComputerVM(myList, ComponentList);
+            dataToSendToView = await _helperService.LoadComputerVM(myList, ComponentList);
+
+            Order Order = await _orderService.GetOrderItem();
+
+            ViewData["totalPrice"] = Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum().ToString();
+
             return View(dataToSendToView);
         }
 

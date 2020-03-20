@@ -117,7 +117,7 @@ namespace ComputerApp.Services
         }
 
         //Función que carga el objeto tipo ComputerVM para luego ser enviado a la vista
-        public List<ComputerVM> LoadComputerVM(List<Computer> myList, List<Component> ComponentList)
+        public async Task<List<ComputerVM>> LoadComputerVM(List<Computer> myList, List<Component> ComponentList)
         {
             List<ComputerVM> dataToLoad = new List<ComputerVM>();
             foreach (Computer item in myList)
@@ -126,7 +126,7 @@ namespace ComputerApp.Services
                 itemComputerVM.ComputerId = item.Id;
                 itemComputerVM.ImgUrl = item.ImgUrl;
                 itemComputerVM.Price = item.Price;
-                itemComputerVM.Qty = 1;
+                itemComputerVM.Qty = await GetHowManyComputerWThisIDInComputerOrder(itemComputerVM.ComputerId);
                 //itemComputerVM.TotalPrice = item.Price;
                 foreach (ComputerComponent subItem in item.ComputerComponents)
                 {
@@ -142,6 +142,12 @@ namespace ComputerApp.Services
             }
 
             return (dataToLoad);
+        }
+
+        private async Task<int> GetHowManyComputerWThisIDInComputerOrder(int computerId)
+        {
+            List<ComputerOrder> ComputerOrders = await _context.ComputerOrder.Where(c => c.ComputerId == computerId).ToListAsync();
+            return (ComputerOrders.Count());
         }
 
         // Contruye una lista de computadoras exeptuando la "Custom Computer" y si es Desktop or Laptop
