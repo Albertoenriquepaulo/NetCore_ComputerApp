@@ -80,10 +80,18 @@ namespace ComputerApp.Controllers
                                         .Where(computerItem => computerItem.Id == computerId)
                                         .FirstOrDefaultAsync();
 
-            dataFromView.ComputerId = computerId;
-            dataFromView.ImgUrl = computer.ImgUrl;
-            dataFromView.Price = computer.Price;
-            dataFromView.Qty = 1;
+            //dataFromView.ComputerId = computerId;
+            //dataFromView.ImgUrl = computer.ImgUrl;
+            //dataFromView.Price = computer.Price;
+            //dataFromView.Qty = 1;
+
+            dataFromView = new ComputerVM
+            {
+                ComputerId = computerId,
+                ImgUrl = computer.ImgUrl,
+                Price = computer.Price,
+                Qty = 1
+            };
 
             if (orderAssociatedWUser == null)
             {

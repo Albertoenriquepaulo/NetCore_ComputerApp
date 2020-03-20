@@ -95,13 +95,13 @@
                     <td>
                         @if (item.Products.Count == 0)
                         {
-                            <a asp-action="Delete" asp-route-id="@item.ComputerId">Delete</a>
+                            <a class="text-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
                         }
                         else
                         {
-                            <a asp-action="BuildComputerEdit" asp-route-id="@item.ComputerId">Edit</a> @:|
-                            <a asp-action="Details" asp-route-id="@item.ComputerId">Details</a> @:|
-                            <a asp-action="Delete" asp-route-id="@item.ComputerId">Delete</a>
+                            <a asp-action="BuildComputerEdit" asp-route-id="@item.ComputerId"><i class="fas fa-edit"></i></a> @*@:|*@
+                            <a asp-action="Details" asp-route-id="@item.ComputerId"><i class="fas fa-info-circle"></i></a> @*@:|*@
+                            <a class="text-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
                         }
                         @*<a asp-action="BuildComputerEdit" asp-route-id="@item.ComputerId">Edit</a> |
                             <a asp-action="Details" asp-route-id="@item.ComputerId">Details</a> |*@
