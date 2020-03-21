@@ -12,8 +12,6 @@
 
 @{
     var cartItemsNumber = Context.Session.GetString("SessionCartItemsNumber");
-    //double tp = Context.Session.GetString("SessionCartItemsTotalPrice");
-    //string totalPrice = string.Format("€{0:N2}", tp);
     string totalPrice = Context.Session.GetString("SessionCartItemsTotalPrice");
 }
 
@@ -95,49 +93,7 @@
                                 <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
                             </li>
                         }
-                        <li>
-                            <div>
-                                <ul class="nav navbar-nav navbar-right">
-                                    <li class="dropdown">
-                                        <a href="#"
-                                           class="dropdown-toggle"
-                                           data-toggle="dropdown"
-                                           role="button"
-                                           aria-expanded="false">
-                                            <span class="fa fa-shopping-cart bigicon"></span>&nbsp;(@cartItemsNumber)<span class="caret"></span>
-                                        </a>
-
-                                        <ul class="dropdown-menu dropdown-cart" role="menu">
-                                            <li class="text-right" style="border-bottom: 1px solid #ccc">Total: <span class="text-info">@totalPrice</span></li>
-                                            @foreach (var item in cartDataFromControllers)
-                                            {
-                                                <li style="border-bottom:1px solid #ccc;">
-                                                    <span class="item">
-                                                        <span class="item-left">
-                                                            <img src="@item.ImgUrl" alt="" class="img-cart" />
-                                                            <span class="item-info">
-                                                                <span class="d-inline-block text-truncate" style="max-width: 100px;">@await HelperService.GetComputerNameAsync(item.ComputerId)</span>
-                                                                <span class="badge badge-dark" style="width: auto;">@item.Qty (unit)</span>
-                                                                <span>@string.Format("€{0:N2}", item.Price)</span>
-                                                                @*<span class="badge badge-primary">@string.Format("€{0:N2}", item.Price)</span>
-                                                                    <span class="badge badge-dark">Quantity: @item.Qty</span>*@
-
-                                                            </span>
-                                                        </span>
-                                                        <span class="item-right">
-                                                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.ComputerId"><i class="far fa-trash-alt"></i></a>
-                                                        </span>
-                                                    </span>
-                                                </li>
-                                            }
-
-                                            <li class="divider"></li>
-                                            <li><a class="text-center" href="#">View Cart</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>
