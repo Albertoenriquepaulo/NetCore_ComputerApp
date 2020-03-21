@@ -44,6 +44,16 @@ namespace ComputerApp.Controllers
             int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
             //List<ComputerVM> cartDataFromControllers = new List<ComputerVM>();
             //cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
+
+            //To Update ShoppingCartInfo
+
+            DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
+            HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
+
+            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
+            HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
+            //FIN To Update ShoppingCartInfo
+
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
 
             return View();
@@ -64,6 +74,14 @@ namespace ComputerApp.Controllers
             // Para decirle a la vista que no ofrezca la opcion "Build your own Computer" cuando sea Laptop
             ViewData["isDesktop"] = isDesktop;
             myComputers = await _helperService.BuildComputerList((bool)isDesktop);
+
+            //To Update ShoppingCartInfo
+            DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
+            HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
+
+            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
+            HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
+            //FIN To Update ShoppingCartInfo
 
             return View(myComputers);
         }

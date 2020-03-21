@@ -234,4 +234,10 @@ ul.dropdown-cart {
     padding-left: 15px;
 }
 
+#shopping-cart {
+    position: relative !important;
+    padding-top: 10px !important;
+    padding-left: 11px !important;
+}
+
 /*********  FIN SHOPING CART CSS ***********/

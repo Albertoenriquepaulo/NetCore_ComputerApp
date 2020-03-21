@@ -39,63 +39,39 @@ namespace ComputerApp.Controllers
         // GET: Computers
         public async Task<IActionResult> Index()
         {
-            List<Computer> myList = new List<Computer>();
-            List<ComputerVM> dataToSendToView = new List<ComputerVM>();
-            List<Component> ComponentList = await _context.Component.ToListAsync();
-            AppUser myCurrentUser = await _userManager.GetUserAsync(User);
+            //List<Computer> myList = new List<Computer>();
+            //List<ComputerVM> dataToSendToView = new List<ComputerVM>();
+            //List<Component> ComponentList = await _context.Component.ToListAsync();
+            //AppUser myCurrentUser = await _userManager.GetUserAsync(User);
 
-            //Obtengo la orden asociada al Usuario
-            Order applicationDbContext = await _orderService.GetOrderItem();
-
-            if (applicationDbContext != null)
-            {
-                foreach (var item in applicationDbContext.ComputerOrders)
-                {
-                    myList.Add(item.Computer);
-                }
-                foreach (Computer item in myList)
-                {
-                    if (item.ComputerComponents.Count > 0) //Solo actualizará precio cuando el computer sea Custom
-                    {
-                        await _helperService.UpdateComputerPrice(item);
-                    }
-
-                }
-            }
+            DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
 
             //Cantidad a imprimir en el carrito, usando Session, presente en HomeController, and LogOut
             int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
 
+            ViewData["myList"] = dataForShoppingCartVM.MyList;//myList;
 
-            //Filtrando la lista, quitando sus elementos repetidos, ya que si hay un elemnto repetido
-            //debo colocarlo en cantidad y no repetir elemento en la tabla de la vista
-            myList = myList.GroupBy(computerItem => computerItem.Id)
-                                                .Select(pc => pc.First())
-                                                .ToList();
-            ViewData["myList"] = myList;
-            dataToSendToView = await _helperService.LoadComputerVM(myList, ComponentList);
+            //Order Order = await _orderService.GetOrderItem();
 
-            Order Order = await _orderService.GetOrderItem();
+            //if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
+            //{
+            //    ViewData["totalPrice"] = string.Format("€{0:N2}", Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum());
 
-
-            if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
-            {
-                ViewData["totalPrice"] = string.Format("€{0:N2}", Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum());
-
-                HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
-            }
-            else  ////Cuando el usuario es nuevo y NO ha introducido al menos una order en cart
-            {
-                ViewData["totalPrice"] = "0";
-                HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject("0"));
-            }
-
-            HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataToSendToView));
+            //    HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
+            //}
+            //else  ////Cuando el usuario es nuevo y NO ha introducido al menos una order en cart
+            //{
+            //    ViewData["totalPrice"] = "0";
+            //    HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject("0"));
+            //}
+            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
+            HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
+            HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
 
             //JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
 
-            return View(dataToSendToView);
+            return View(dataForShoppingCartVM.DataToSendToView);
         }
 
         // GET: Computers/Details/5

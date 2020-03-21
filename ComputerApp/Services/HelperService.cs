@@ -17,6 +17,7 @@ namespace ComputerApp.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly OrderService _orderService;
         public string CUSTOM_COMPUTER_NAME
         {
             get
@@ -27,12 +28,13 @@ namespace ComputerApp.Services
 
         //public  MyProperty { get; set; }
 
-        public HelperService(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor)
+        public HelperService(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor, OrderService orderService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _orderService = orderService;
         }
 
         public double GetComputerTotalPrice(ComponentVM dataFromView)
@@ -169,6 +171,64 @@ namespace ComputerApp.Services
             return computer.Name;
         }
 
+        //Obtiene la data para ser enviada al Shopping Cart view que es el Index del ComputersCorntroller
+        public async Task<DataForShoppingCartVM> GetDataToSendToShoppingCartViewAsync()
+        {
+            List<Computer> myList = new List<Computer>();
+            List<ComputerVM> dataToSendToView = new List<ComputerVM>();
+            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                List<Component> ComponentList = await _context.Component.ToListAsync();
 
+
+                Order applicationDbContext = await _orderService.GetOrderItem();
+
+                if (applicationDbContext != null)
+                {
+                    foreach (var item in applicationDbContext.ComputerOrders)
+                    {
+                        myList.Add(item.Computer);
+                    }
+                    foreach (Computer item in myList)
+                    {
+                        if (item.ComputerComponents.Count > 0) //Solo actualizará precio cuando el computer sea Custom
+                        {
+                            await UpdateComputerPrice(item);
+                        }
+
+                    }
+                }
+                //Filtrando la lista, quitando sus elementos repetidos, ya que si hay un elemnto repetido
+                //debo colocarlo en cantidad y no repetir elemento en la tabla de la vista
+                myList = myList.GroupBy(computerItem => computerItem.Id)
+                                                    .Select(pc => pc.First())
+                                                    .ToList();
+
+                dataToSendToView = await LoadComputerVM(myList, ComponentList);
+
+                DataForShoppingCartVM dataForShoppingCartVM = new DataForShoppingCartVM(dataToSendToView, myList);
+
+                return dataForShoppingCartVM;
+            }
+
+            return (new DataForShoppingCartVM(dataToSendToView, myList));
+        }
+
+        public async Task<string> GetTotalOrderPriceAsync()
+        {
+            double totalPrice = 0;
+
+            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                Order Order = await _orderService.GetOrderItem();
+
+                if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
+                {
+                    totalPrice = Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum();
+                }
+            }
+
+            return string.Format("€{0:N2}", totalPrice);
+        }
     }
 }
