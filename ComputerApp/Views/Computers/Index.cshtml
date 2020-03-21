@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using ComputerApp.ViewModels;
-@*@model IEnumerable<ComputerApp.Models.Computer>*@
 @model IEnumerable<ComputerApp.ViewModels.ComputerVM>
 @inject UserManager<AppUser> UserManager
 @inject SignInManager<AppUser> SignInManager
@@ -9,12 +8,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+    <h1 class="text-center">Shopping cart</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
     <a asp-action="BuildComputer">Build your own computer</a>
-</p>
+</p>*@
 
 <table class="table">
     <thead>
@@ -99,3 +98,6 @@
     <strong>Total Price:</strong>&nbsp;&nbsp;@string.Format("€{0:N2}", ViewData["totalPrice"])
 </p>
 <hr />
+<div style="display:flex;justify-content: flex-end;">
+    <a class="btn btn-outline-primary" asp-action="BuildComputerEdit" asp-route-id="" ><i class="fas fa-euro-sign"></i>&nbsp;&nbsp;Check Out</a>
+</div>

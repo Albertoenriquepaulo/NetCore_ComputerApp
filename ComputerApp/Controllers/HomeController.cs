@@ -42,6 +42,8 @@ namespace ComputerApp.Controllers
         {
 
             int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            //List<ComputerVM> cartDataFromControllers = new List<ComputerVM>();
+            //cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
 
             return View();

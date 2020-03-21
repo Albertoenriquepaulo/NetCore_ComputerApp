@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using ComputerApp.ViewModels;
 
 namespace ComputerApp.Areas.Identity.Pages.Account
 {
@@ -35,6 +36,7 @@ namespace ComputerApp.Areas.Identity.Pages.Account
 
             _logger.LogInformation("User logged out.");
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(0));
+            HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(new List<ComputerVM>()));
 
             if (returnUrl != null)
             {

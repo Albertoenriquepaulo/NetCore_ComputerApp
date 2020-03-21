@@ -162,5 +162,13 @@ namespace ComputerApp.Services
             return Computers;
         }
 
+        public async Task<string> GetComputerNameAsync(int computerId)
+        {
+            Computer computer = await _context.Computer.Where(pc => pc.Id == computerId).FirstOrDefaultAsync();
+
+            return computer.Name;
+        }
+
+
     }
 }
