@@ -9,12 +9,14 @@
 
 @{
     var cantidad = Context.Session.GetString("SessionCartItemsNumber");
+    var totalPrice = Context.Session.GetString("SessionCartItemsTotalPrice");
 }
 
 @{
+    List<ComputerVM> cartDataFromControllers = new List<ComputerVM>();
     if (Context.Session.GetString("SessionCartItems") != null)
     {
-        List<ComputerVM> cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(Context.Session.GetString("SessionCartItems"));
+        cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(Context.Session.GetString("SessionCartItems"));
     }
 
 }
@@ -33,8 +35,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ComputerApp</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
+    @*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">*@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />*@
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -80,24 +90,72 @@
                                 <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
                             </li>
                         }
-                        <li class="dropdown">
-                            <a data-toggle="dropdown" class="btn btn-light dropdown-toggle" href="#"><i class="fas fa-shopping-cart"></i>&nbsp;(@cantidad)<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                @*@if (Session["cart"] != null)
-                                    {
-                                        foreach (Item item in (List<Item>)Session["cart"])
-                                        {
-                                            <li><a href="#">@item.Product.ProductName (@item.Quantity)</a></li>
-                                        }
-                                    }*@
-                                <li><a href="#">Uno</a></li>
-                                <li><a href="#">Dos</a></li>
-                                <li><a href="#">Tres</a></li>
-                                <li><a href="#">@ViewData["cartItems"]</a></li>
-                                <li><a href="#">@cantidad</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">IT</a></li>
-                            </ul>
+                        <li>
+                            @*<a data-toggle="dropdown" class="btn btn-light dropdown-toggle" href="#"><i class="fas fa-shopping-cart"></i>&nbsp;(@cantidad)<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Uno</a></li>
+                                    <li><a href="#">Dos</a></li>
+                                    <li><a href="#">Tres</a></li>
+                                    <li><a href="#">@ViewData["cartItems"]</a></li>
+                                    <li><a href="#">@cantidad</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">IT</a></li>
+                                </ul>*@
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12 col-12 main-section">
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-info" data-toggle="dropdown">
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge badge-pill badge-danger">@cantidad</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <div class="row total-header-section">
+                                                <div class="col-lg-6 col-sm-6 col-6">
+                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i> <span class="badge badge-pill badge-danger">@cantidad</span>
+                                                </div>
+                                                <div class="col-lg-6 col-sm-6 col-6 total-section text-right">
+                                                    <p>Total: <span class="text-info">@totalPrice</span></p>
+                                                </div>
+                                            </div>
+                                            @foreach (var item in cartDataFromControllers)
+                                            {
+                                                <div class="row cart-detail">
+                                                    <div class="col-lg-4 col-sm-4 col-4 cart-detail-img">
+                                                        <img src="@item.ImgUrl">
+                                                    </div>
+                                                    <div class="col-lg-8 col-sm-8 col-8 cart-detail-product">
+                                                        <p>@item.ComputerId</p>
+                                                        <span class="price text-info">@item.Price</span> <span class="count"> Quantity:@item.Qty</span>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            @*<div class="row cart-detail">
+                                                    <div class="col-lg-4 col-sm-4 col-4 cart-detail-img">
+                                                        <img src="https://cdn2.gsmarena.com/vv/pics/blu/blu-vivo-48-1.jpg">
+                                                    </div>
+                                                    <div class="col-lg-8 col-sm-8 col-8 cart-detail-product">
+                                                        <p>Vivo DSC-RX100M..</p>
+                                                        <span class="price text-info"> $500.40</span> <span class="count"> Quantity:01</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row cart-detail">
+                                                    <div class="col-lg-4 col-sm-4 col-4 cart-detail-img">
+                                                        <img src="https://static.toiimg.com/thumb/msid-55980052,width-640,resizemode-4/55980052.jpg">
+                                                    </div>
+                                                    <div class="col-lg-8 col-sm-8 col-8 cart-detail-product">
+                                                        <p>Lenovo DSC-RX100M..</p>
+                                                        <span class="price text-info"> $445.78</span> <span class="count"> Quantity:01</span>
+                                                    </div>
+                                                </div>*@
+                                            <div class="row">
+                                                <div class="col-lg-12 col-sm-12 col-12 text-center checkout">
+                                                    <button class="btn btn-primary btn-block">Checkout</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -115,8 +173,13 @@
             &copy; 2020 - ComputerApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
+
+    @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>*@
+
     <script src="~/js/site.js" asp-append-version="true"></script>
 
 

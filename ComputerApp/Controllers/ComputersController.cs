@@ -82,10 +82,12 @@ namespace ComputerApp.Controllers
             if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
             {
                 ViewData["totalPrice"] = Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum().ToString();
+                HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
             }
             else  ////Cuando el usuario es nuevo y NO ha introducido al menos una order en cart
             {
                 ViewData["totalPrice"] = "0";
+                HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject("0"));
             }
 
             HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataToSendToView));
