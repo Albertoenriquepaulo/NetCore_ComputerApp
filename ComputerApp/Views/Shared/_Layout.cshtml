@@ -1,6 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json;
+@using ComputerApp.ViewModels;
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
+
+
+
+@{
+    var cantidad = Context.Session.GetString("SessionCartItemsNumber");
+}
+
+@{
+    if (Context.Session.GetString("SessionCartItems") != null)
+    {
+        List<ComputerVM> cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(Context.Session.GetString("SessionCartItems"));
+    }
+
+}
 
 @{
     bool isAdmin = false;
@@ -64,7 +81,7 @@
                             </li>
                         }
                         <li class="dropdown">
-                            <a data-toggle="dropdown" class="btn btn-light dropdown-toggle" href="#"><i class="fas fa-shopping-cart"></i>&nbsp;(@ViewData["cartItems"])<b class="caret"></b></a>
+                            <a data-toggle="dropdown" class="btn btn-light dropdown-toggle" href="#"><i class="fas fa-shopping-cart"></i>&nbsp;(@cantidad)<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 @*@if (Session["cart"] != null)
                                     {
@@ -77,6 +94,7 @@
                                 <li><a href="#">Dos</a></li>
                                 <li><a href="#">Tres</a></li>
                                 <li><a href="#">@ViewData["cartItems"]</a></li>
+                                <li><a href="#">@cantidad</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#">IT</a></li>
                             </ul>

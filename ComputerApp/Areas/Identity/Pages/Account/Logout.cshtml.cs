@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace ComputerApp.Areas.Identity.Pages.Account
 {
@@ -30,7 +32,10 @@ namespace ComputerApp.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
+
             _logger.LogInformation("User logged out.");
+            HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(0));
+
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);

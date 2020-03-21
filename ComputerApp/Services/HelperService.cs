@@ -144,11 +144,13 @@ namespace ComputerApp.Services
             return (dataToLoad);
         }
 
-        private async Task<int> GetHowManyComputerWThisIDInComputerOrder(int computerId)
+        //Obtiene cuantas computadoras hay en ComputerOrder Dado el computerId, es decir del mismo modelo
+        public async Task<int> GetHowManyComputerWThisIDInComputerOrder(int computerId)
         {
             List<ComputerOrder> ComputerOrders = await _context.ComputerOrder.Where(c => c.ComputerId == computerId).ToListAsync();
             return (ComputerOrders.Count());
         }
+
 
         // Contruye una lista de computadoras exeptuando la "Custom Computer" y si es Desktop or Laptop
         public async Task<List<Computer>> BuildComputerList(bool isDesktop)

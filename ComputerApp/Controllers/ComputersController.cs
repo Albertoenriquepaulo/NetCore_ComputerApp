@@ -11,6 +11,8 @@ using ComputerApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using ComputerApp.Services;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 
 //Video Roles y autorizaciones, usuario desde html min 20
@@ -61,12 +63,13 @@ namespace ComputerApp.Controllers
                 }
             }
 
-            //TODO: Cantidad a imprimir en el carrito
-            int cantidad = myList.Count();
-            ViewData["cartItems"] = cantidad;
+            //Cantidad a imprimir en el carrito, usando Session, presente en HomeController, and LogOut
+            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
+
 
             //Filtrando la lista, quitando sus elementos repetidos, ya que si hay un elemnto repetido
-            //debo colocarlo en cantidad
+            //debo colocarlo en cantidad y no repetir elemento en la tabla de la vista
             myList = myList.GroupBy(computerItem => computerItem.Id)
                                                 .Select(pc => pc.First())
                                                 .ToList();
@@ -75,7 +78,19 @@ namespace ComputerApp.Controllers
 
             Order Order = await _orderService.GetOrderItem();
 
-            ViewData["totalPrice"] = Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum().ToString();
+
+            if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
+            {
+                ViewData["totalPrice"] = Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum().ToString();
+            }
+            else  ////Cuando el usuario es nuevo y NO ha introducido al menos una order en cart
+            {
+                ViewData["totalPrice"] = "0";
+            }
+
+            HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataToSendToView));
+
+            //JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
 
             return View(dataToSendToView);
         }

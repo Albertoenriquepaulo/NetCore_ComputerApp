@@ -3,6 +3,7 @@ using ComputerApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,5 +40,40 @@ namespace ComputerApp.Services
 
             return order;
         }
+        //Obtiene cuantas computadoras hay en ComputerOrder Dado el userId
+        public async Task<int> GetHowManyComputerHasCurrentUserAsync()
+        {
+            AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            Order order = new Order();
+            order.ComputerOrders = new List<ComputerOrder>();
+            if (myCurrentUser != null)
+            {
+                order = await _context.Order.Where(o => o.AppUserId == myCurrentUser.Id)
+                                              .Include(co => co.ComputerOrders)
+                                              .FirstOrDefaultAsync();
+                if (order == null)
+                {
+                    return 0;
+                }
+            }
+            return (order.ComputerOrders.Count());
+        }
+
+        //public async Task SetSessionCartItems(int? cantidad)
+        //{
+        //    AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
+        //    if (myCurrentUser != null)
+        //    {
+        //        if (cantidad == null)
+        //        {
+        //            cantidad = await GetHowManyComputerHasCurrentUserAsync();
+        //        }
+        //    }
+
+        //    HttpContext.Session.SetString("userCartItems", JsonConvert.SerializeObject(cantidad));
+
+        //}
+
     }
 }

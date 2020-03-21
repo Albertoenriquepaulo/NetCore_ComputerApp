@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using ComputerApp.Models.ShoppingCart;
 using ComputerApp.Services;
 using ComputerApp.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace ComputerApp.Controllers
 {
@@ -36,8 +38,12 @@ namespace ComputerApp.Controllers
 
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+
+            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
+
             return View();
         }
 
@@ -106,6 +112,11 @@ namespace ComputerApp.Controllers
             }
 
             int computerOrderId = await _helperService.InsertComputerOrderToDB(orderId, computerId);
+
+            //Updating CartItems
+            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
+            //FIN Updating CartItems
 
             return RedirectToAction(nameof(Desktop), new { isDesktop = computer.IsDesktop });
         }

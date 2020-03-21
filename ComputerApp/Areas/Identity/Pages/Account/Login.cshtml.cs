@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using ComputerApp.Services;
 
 namespace ComputerApp.Areas.Identity.Pages.Account
 {
@@ -21,14 +24,17 @@ namespace ComputerApp.Areas.Identity.Pages.Account
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly OrderService _orderService;
 
-        public LoginModel(SignInManager<AppUser> signInManager, 
+        public LoginModel(SignInManager<AppUser> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager,
+            OrderService orderService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _orderService = orderService;
         }
 
         [BindProperty]
@@ -57,6 +63,7 @@ namespace ComputerApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -74,6 +81,7 @@ namespace ComputerApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+
             returnUrl = returnUrl ?? Url.Content("~/");
 
             if (ModelState.IsValid)
