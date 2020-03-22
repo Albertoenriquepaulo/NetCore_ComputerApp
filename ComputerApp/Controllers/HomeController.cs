@@ -41,7 +41,7 @@ namespace ComputerApp.Controllers
         public async Task<IActionResult> Index()
         {
 
-            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync(false);
             //List<ComputerVM> cartDataFromControllers = new List<ComputerVM>();
             //cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
 
@@ -73,7 +73,7 @@ namespace ComputerApp.Controllers
             List<Computer> myComputers = new List<Computer>();
             // Para decirle a la vista que no ofrezca la opcion "Build your own Computer" cuando sea Laptop
             ViewData["isDesktop"] = isDesktop;
-            myComputers = await _helperService.BuildComputerList((bool)isDesktop);
+            myComputers = await _helperService.BuildComputerListAsync((bool)isDesktop);
 
             //To Update ShoppingCartInfo
             DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
@@ -102,7 +102,7 @@ namespace ComputerApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Order orderAssociatedWUser = await _orderService.GetOrderItem();
+            Order orderAssociatedWUser = await _orderService.GetOrderItemAsyn();
             Computer computer = await _context.Computer.Include(computerOrderItem => computerOrderItem.ComputerOrders)
                                         .Where(computerItem => computerItem.Id == computerId)
                                         .FirstOrDefaultAsync();
@@ -115,14 +115,15 @@ namespace ComputerApp.Controllers
                 Qty = 1
             };
 
+            //Cuando el usuario no tiene una order, se crea una nueva, con (order.IsCart = true) y (order.CheckOut) = false;
             if (orderAssociatedWUser == null)
             {
-                //order.Price += _helperService.GetComputerTotalPrice(dataFromView);
                 order.Price = computer.Price;
                 order.Qty = 1;
                 order.IsCart = true;
+                order.CheckOut = false;
                 order.AppUserId = myCurrentUser.Id;
-                orderId = await _helperService.InsertOrderToDB(order);
+                orderId = await _helperService.InsertOrderToDBAsync(order);
             }
             else
             {
@@ -131,10 +132,10 @@ namespace ComputerApp.Controllers
                 //TODO: Aqui debo actualizar el Precio de la Order
             }
 
-            int computerOrderId = await _helperService.InsertComputerOrderToDB(orderId, computerId);
+            int computerOrderId = await _helperService.InsertComputerOrderToDBAsync(orderId, computerId);
 
             //Updating CartItems
-            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync(false);
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
             //FIN Updating CartItems
 

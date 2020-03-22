@@ -26,11 +26,11 @@ namespace ComputerApp.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<Order> GetOrderItem()
+        public async Task<Order> GetOrderItemAsyn()
         {
             AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
             Order order = await _context.Order
-                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id)
+                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id && orderItem.CheckOut == false)
                 .Include(pcOrderItem => pcOrderItem.ComputerOrders)
                     .ThenInclude(orderItem => orderItem.Order)
                 .Include(pcOrderItem => pcOrderItem.ComputerOrders)
@@ -40,15 +40,15 @@ namespace ComputerApp.Services
 
             return order;
         }
-        //Obtiene cuantas computadoras hay en ComputerOrder Dado el userId
-        public async Task<int> GetHowManyComputerHasCurrentUserAsync()
+        //Obtiene cuantas computadoras hay en ComputerOrder Dado el userId y el checkOut
+        public async Task<int> GetHowManyComputerHasCurrentUserAsync(bool checkOut)
         {
             AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
             Order order = new Order();
             order.ComputerOrders = new List<ComputerOrder>();
             if (myCurrentUser != null)
             {
-                order = await _context.Order.Where(o => o.AppUserId == myCurrentUser.Id)
+                order = await _context.Order.Where(o => o.AppUserId == myCurrentUser.Id && o.CheckOut == checkOut)
                                               .Include(co => co.ComputerOrders)
                                               .FirstOrDefaultAsync();
                 if (order == null)

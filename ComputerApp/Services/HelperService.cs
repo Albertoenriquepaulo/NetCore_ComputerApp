@@ -55,14 +55,14 @@ namespace ComputerApp.Services
 
         //Inserta un elemento Computer nuevo en la bd Computer y devuelve el id de este elemento
         //public async Task<int> CreateFromCode([Bind("Id,Name,Price,IsDesktop,ImgUrl,OrderId")] Computer computer)
-        public async Task<int> InsertComputerToDB(Computer computer)
+        public async Task<int> InsertComputerToDBAsync(Computer computer)
         {
             _context.Add(computer);
             await _context.SaveChangesAsync();
 
             return computer.Id;
         }
-        public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId, int orderId)
+        public async Task<int> InsertComponentsToComputerComponentDBAsync(ComponentVM component, int computerId, int orderId)
         {
             Type type = typeof(ComponentVM);
             int NumberOfRecords = type.GetProperties().Length;
@@ -85,7 +85,7 @@ namespace ComputerApp.Services
         }
 
         //Inserta un elemento Order nuevo en la bd Order y devuelve el id de este elemento
-        public async Task<int> InsertOrderToDB(Order order)
+        public async Task<int> InsertOrderToDBAsync(Order order)
         {
             _context.Add(order);
             await _context.SaveChangesAsync();
@@ -94,7 +94,7 @@ namespace ComputerApp.Services
         }
 
         //Inserta un elemento ComputerOrder nuevo en la bd ComputerOrder y devuelve el id de este elemento
-        public async Task<int> InsertComputerOrderToDB(int orderId, int computerId)
+        public async Task<int> InsertComputerOrderToDBAsync(int orderId, int computerId)
         {
             ComputerOrder computerOrder = new ComputerOrder();
             computerOrder.OrderId = orderId;
@@ -106,7 +106,7 @@ namespace ComputerApp.Services
         }
 
         //Se actualiza el price en la tabla computer, recibe el objeto computer y actualiza el valor Price
-        public async Task UpdateComputerPrice(Computer computer)
+        public async Task UpdateComputerPriceAsync(Computer computer)
         {
             double price = 0;
             List<Component> Components = await _context.Component.ToListAsync();
@@ -119,7 +119,7 @@ namespace ComputerApp.Services
         }
 
         //Función que carga el objeto tipo ComputerVM para luego ser enviado a la vista
-        public async Task<List<ComputerVM>> LoadComputerVM(List<Computer> myList, List<Component> ComponentList)
+        public async Task<List<ComputerVM>> LoadComputerVMAsync(List<Computer> myList, List<Component> ComponentList)
         {
             List<ComputerVM> dataToLoad = new List<ComputerVM>();
             foreach (Computer item in myList)
@@ -128,7 +128,7 @@ namespace ComputerApp.Services
                 itemComputerVM.ComputerId = item.Id;
                 itemComputerVM.ImgUrl = item.ImgUrl;
                 itemComputerVM.Price = item.Price;
-                itemComputerVM.Qty = await GetHowManyComputerWThisIDInComputerOrder(itemComputerVM.ComputerId);
+                itemComputerVM.Qty = await GetHowManyComputerWThisIDInComputerOrderAsync(itemComputerVM.ComputerId);
                 //itemComputerVM.TotalPrice = item.Price;
                 foreach (ComputerComponent subItem in item.ComputerComponents)
                 {
@@ -147,7 +147,7 @@ namespace ComputerApp.Services
         }
 
         //Obtiene cuantas computadoras hay en ComputerOrder Dado el computerId, es decir del mismo modelo
-        public async Task<int> GetHowManyComputerWThisIDInComputerOrder(int computerId)
+        public async Task<int> GetHowManyComputerWThisIDInComputerOrderAsync(int computerId)
         {
             List<ComputerOrder> ComputerOrders = await _context.ComputerOrder.Where(c => c.ComputerId == computerId).ToListAsync();
             return (ComputerOrders.Count());
@@ -155,7 +155,7 @@ namespace ComputerApp.Services
 
 
         // Contruye una lista de computadoras exeptuando la "Custom Computer" y si es Desktop or Laptop
-        public async Task<List<Computer>> BuildComputerList(bool isDesktop)
+        public async Task<List<Computer>> BuildComputerListAsync(bool isDesktop)
         {
             List<Computer> computersFromContext = await _context.Computer.ToListAsync();
             List<Computer> Computers = computersFromContext
@@ -181,7 +181,7 @@ namespace ComputerApp.Services
                 List<Component> ComponentList = await _context.Component.ToListAsync();
 
 
-                Order applicationDbContext = await _orderService.GetOrderItem();
+                Order applicationDbContext = await _orderService.GetOrderItemAsyn();
 
                 if (applicationDbContext != null)
                 {
@@ -193,7 +193,7 @@ namespace ComputerApp.Services
                     {
                         if (item.ComputerComponents.Count > 0) //Solo actualizará precio cuando el computer sea Custom
                         {
-                            await UpdateComputerPrice(item);
+                            await UpdateComputerPriceAsync(item);
                         }
 
                     }
@@ -204,7 +204,7 @@ namespace ComputerApp.Services
                                                     .Select(pc => pc.First())
                                                     .ToList();
 
-                dataToSendToView = await LoadComputerVM(myList, ComponentList);
+                dataToSendToView = await LoadComputerVMAsync(myList, ComponentList);
 
                 DataForShoppingCartVM dataForShoppingCartVM = new DataForShoppingCartVM(dataToSendToView, myList);
 
@@ -220,7 +220,7 @@ namespace ComputerApp.Services
 
             if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                Order Order = await _orderService.GetOrderItem();
+                Order Order = await _orderService.GetOrderItemAsyn();
 
                 if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
                 {

@@ -39,37 +39,18 @@ namespace ComputerApp.Controllers
         // GET: Computers
         public async Task<IActionResult> Index()
         {
-            //List<Computer> myList = new List<Computer>();
-            //List<ComputerVM> dataToSendToView = new List<ComputerVM>();
-            //List<Component> ComponentList = await _context.Component.ToListAsync();
-            //AppUser myCurrentUser = await _userManager.GetUserAsync(User);
 
             DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
 
             //Cantidad a imprimir en el carrito, usando Session, presente en HomeController, and LogOut
-            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync();
+            int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync(false);
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
 
             ViewData["myList"] = dataForShoppingCartVM.MyList;//myList;
 
-            //Order Order = await _orderService.GetOrderItem();
-
-            //if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
-            //{
-            //    ViewData["totalPrice"] = string.Format("€{0:N2}", Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum());
-
-            //    HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
-            //}
-            //else  ////Cuando el usuario es nuevo y NO ha introducido al menos una order en cart
-            //{
-            //    ViewData["totalPrice"] = "0";
-            //    HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject("0"));
-            //}
             ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
             HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
             HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
-
-            //JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
 
             return View(dataForShoppingCartVM.DataToSendToView);
         }
@@ -255,7 +236,7 @@ namespace ComputerApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Order orderAssociatedWUser = await _orderService.GetOrderItem();
+            Order orderAssociatedWUser = await _orderService.GetOrderItemAsyn();
 
             //.ToListAsync();
 
@@ -265,7 +246,7 @@ namespace ComputerApp.Controllers
                 order.Qty = 1;
                 order.IsCart = false;
                 order.AppUserId = myCurrentUser.Id;
-                orderId = await _helperService.InsertOrderToDB(order);
+                orderId = await _helperService.InsertOrderToDBAsync(order);
             }
             else
             {
@@ -276,9 +257,9 @@ namespace ComputerApp.Controllers
             computer.Price = _helperService.GetComputerTotalPrice(dataFromView);
             computer.IsDesktop = true;
             computer.ImgUrl = "https://c1.neweggimages.com/NeweggImage/ProductImage/83-221-575-V09.jpg";
-            int computerId = await _helperService.InsertComputerToDB(computer);
-            int computerComponentId = await _helperService.InsertComponentsToComputerComponentDB(dataFromView, computerId, orderId);
-            int computerOrderId = await _helperService.InsertComputerOrderToDB(orderId, computerId);
+            int computerId = await _helperService.InsertComputerToDBAsync(computer);
+            int computerComponentId = await _helperService.InsertComponentsToComputerComponentDBAsync(dataFromView, computerId, orderId);
+            int computerOrderId = await _helperService.InsertComputerOrderToDBAsync(orderId, computerId);
 
             return RedirectToAction(nameof(Index));
 
@@ -403,7 +384,7 @@ namespace ComputerApp.Controllers
         //}
 
         ////Inserta un elemento Order nuevo en la bd Order y devuelve el id de este elemento
-        //public async Task<int> InsertOrderToDB(Order order)
+        //public async Task<int> InsertOrderToDBAsync(Order order)
         //{
         //    _context.Add(order);
         //    await _context.SaveChangesAsync();
