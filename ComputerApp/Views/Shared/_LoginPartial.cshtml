@@ -13,10 +13,12 @@
     var cartItemsNumber = Context.Session.GetString("SessionCartItemsNumber");
     string totalPrice = Context.Session.GetString("SessionCartItemsTotalPrice");
     List<ComputerVM> cartDataFromControllers = new List<ComputerVM>();
+    bool isAdmin = false;
     if (Context.Session.GetString("SessionCartItems") != null)
     {
         cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(Context.Session.GetString("SessionCartItems"));
     }
+   
 }
 
 
@@ -24,6 +26,10 @@
     @if (SignInManager.IsSignedIn(User))
     {
         AppUser myCurrentUser = await UserManager.GetUserAsync(User);
+        if (myCurrentUser != null && await UserManager.IsInRoleAsync(myCurrentUser, "admin"))
+        {
+            isAdmin = true;
+        }
         <li class="nav-item">
             <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" style="padding-top: 13px;">Hi @myCurrentUser.Name!</a>
         </li>
@@ -34,9 +40,12 @@
         </li>
 
         <li id="shopping-cart" class="dropdown">
-            <a href="#" class="dropdown-toggle btn btn-outline-primary" data-toggle="dropdown" role="button" aria-expanded="false">
-                <span class="fa fa-shopping-cart bigicon"></span>&nbsp;(@cartItemsNumber)<span class="caret"></span>
-            </a>
+            @if (!isAdmin)
+            {
+                <a href="#" class="dropdown-toggle btn btn-outline-primary" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <span class="fa fa-shopping-cart bigicon"></span>&nbsp;(@cartItemsNumber)<span class="caret"></span>
+                </a>
+            }
 
             <ul class="dropdown-menu dropdown-cart" role="menu">
                 <li class="text-right" style="border-bottom: 1px solid #ccc">Total: <span class="text-info">@totalPrice</span></li>
@@ -51,7 +60,7 @@
                                     <span class="badge badge-dark" style="width: auto;">@item.Qty (unit)</span>
                                     <span>@string.Format("€{0:N2}", item.Price)</span>
                                     @*<span class="badge badge-primary">@string.Format("€{0:N2}", item.Price)</span>
-                                        <span class="badge badge-dark">Quantity: @item.Qty</span>*@
+                                <span class="badge badge-dark">Quantity: @item.Qty</span>*@
 
                                 </span>
                             </span>
@@ -63,7 +72,8 @@
                 }
 
                 <li class="divider"></li>
-                <li style="display:flex;justify-content: flex-end; padding-right:20px; background-color:#ccc"><a class="text-center" asp-controller="Computers" asp-action="Index">View Cart</a></li>
+                <li><a class="text-center btn btn-lg btn-block btn-outline-dark" style="line-height: 0.2;" asp-controller="Computers" asp-action="Index"><i class="fas fa-cart-plus"></i>&nbsp;&nbsp;View Cart</a></li>
+                @*<a class="btn btn-lg btn-block text-truncate mt-auto btn-primary " style="margin-top: auto;" asp-route-computerId="@computerItem.Id" asp-action="AddToCart"><i class="fas fa-cart-plus"></i></a>*@
             </ul>
         </li>
     }

@@ -26,6 +26,8 @@ namespace ComputerApp.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        //Busca el Order del Current User cuyo valor de CheckOut es checkOut
         public async Task<Order> GetOrderItemAsync(bool checkOut)
         {
             AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);

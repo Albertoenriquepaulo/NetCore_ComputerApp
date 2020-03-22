@@ -341,8 +341,8 @@ namespace ComputerApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CheckOut(int id, ComponentVM dataFromView)
         {
-            bool exito = await _helperService.UpdateCheckOutFieldOfCurrentOrderAsync(true);
-
+            //bool exito = await _helperService.UpdateCheckOutFieldOfCurrentOrderAsync(true);
+            await _helperService.DeleteOrderAsync(false);
             return RedirectToAction(nameof(Index), "Home");
         }
 

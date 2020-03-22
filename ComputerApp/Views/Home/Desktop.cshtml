@@ -33,7 +33,7 @@
                     <h5 class="card-title text-secondary text-justify">@computerItem.Name</h5>
                     <p class="card-text">Price: <strong>@string.Format("€{0:N2}", @computerItem.Price)</strong></p>
                     <div class="card-footer text-center">
-                        <a class="btn btn-secondary btn-lg btn-block text-truncate mt-auto btn-primary " style="margin-top: auto;" asp-route-computerId="@computerItem.Id" asp-action="AddToCart"><i class="fas fa-cart-plus"></i></a>
+                        <a class="btn btn-lg btn-block text-truncate mt-auto btn-primary " style="margin-top: auto;" asp-route-computerId="@computerItem.Id" asp-action="AddToCart"><i class="fas fa-cart-plus"></i></a>
                     </div>
                 </div>
             </div>

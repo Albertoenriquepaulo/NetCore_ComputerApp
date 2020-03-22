@@ -231,7 +231,8 @@ namespace ComputerApp.Services
             return string.Format("€{0:N2}", totalPrice);
         }
 
-        //Actualiza el campo CheckOut de la Order, devuelve tru si es exitoso y false si no lo es 
+        //Actualiza el campo CheckOut de la Order, devuelve true si es exitoso y false si no lo es 
+        //Lo setea al valor recibido en checkOut
         public async Task<bool> UpdateCheckOutFieldOfCurrentOrderAsync(bool checkOut)
         {
             Order order = await _orderService.GetOrderItemAsync(!checkOut); //Buscamos el order que debe estar en el contrario de checkOut
@@ -250,6 +251,13 @@ namespace ComputerApp.Services
                 }
             }
             return false;
+        }
+
+        public async Task DeleteOrderAsync(bool checkOut)
+        {
+            Order order = await _orderService.GetOrderItemAsync(checkOut); //Buscamos el order que debe estar en el contrario de checkOut
+            _context.Order.Remove(order);
+            await _context.SaveChangesAsync();
         }
     }
 }
