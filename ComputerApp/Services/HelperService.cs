@@ -181,7 +181,7 @@ namespace ComputerApp.Services
                 List<Component> ComponentList = await _context.Component.ToListAsync();
 
 
-                Order applicationDbContext = await _orderService.GetOrderItemAsyn();
+                Order applicationDbContext = await _orderService.GetOrderItemAsync(false);
 
                 if (applicationDbContext != null)
                 {
@@ -214,13 +214,13 @@ namespace ComputerApp.Services
             return (new DataForShoppingCartVM(dataToSendToView, myList));
         }
 
-        public async Task<string> GetTotalOrderPriceAsync()
+        public async Task<string> GetTotalOrderPriceAsync(bool checkOut)
         {
             double totalPrice = 0;
 
             if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                Order Order = await _orderService.GetOrderItemAsyn();
+                Order Order = await _orderService.GetOrderItemAsync(checkOut);
 
                 if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
                 {
@@ -229,6 +229,27 @@ namespace ComputerApp.Services
             }
 
             return string.Format("€{0:N2}", totalPrice);
+        }
+
+        //Actualiza el campo CheckOut de la Order, devuelve tru si es exitoso y false si no lo es 
+        public async Task<bool> UpdateCheckOutFieldOfCurrentOrderAsync(bool checkOut)
+        {
+            Order order = await _orderService.GetOrderItemAsync(!checkOut); //Buscamos el order que debe estar en el contrario de checkOut
+            if (order != null)
+            {
+                order.CheckOut = checkOut;
+                try
+                {
+                    _context.Update(order);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            return false;
         }
     }
 }

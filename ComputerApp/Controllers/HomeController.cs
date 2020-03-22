@@ -50,7 +50,7 @@ namespace ComputerApp.Controllers
             DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
             HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
 
-            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
+            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync(false);
             HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
             //FIN To Update ShoppingCartInfo
 
@@ -79,7 +79,7 @@ namespace ComputerApp.Controllers
             DataForShoppingCartVM dataForShoppingCartVM = await _helperService.GetDataToSendToShoppingCartViewAsync();
             HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
 
-            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
+            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync(false);
             HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
             //FIN To Update ShoppingCartInfo
 
@@ -102,7 +102,7 @@ namespace ComputerApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Order orderAssociatedWUser = await _orderService.GetOrderItemAsyn();
+            Order orderAssociatedWUser = await _orderService.GetOrderItemAsync(false);
             Computer computer = await _context.Computer.Include(computerOrderItem => computerOrderItem.ComputerOrders)
                                         .Where(computerItem => computerItem.Id == computerId)
                                         .FirstOrDefaultAsync();

@@ -8,12 +8,12 @@
     ViewData["Title"] = "Index";
 }
 
-    <h1 class="text-center">Shopping cart</h1>
+<h1 class="text-center">Shopping cart</h1>
 
 @*<p>
-    <a asp-action="Create">Create New</a>
-    <a asp-action="BuildComputer">Build your own computer</a>
-</p>*@
+        <a asp-action="Create">Create New</a>
+        <a asp-action="BuildComputer">Build your own computer</a>
+    </p>*@
 
 <table class="table">
     <thead>
@@ -99,5 +99,51 @@
 </p>
 <hr />
 <div style="display:flex;justify-content: flex-end;">
-    <a class="btn btn-outline-primary" asp-action="BuildComputerEdit" asp-route-id="" ><i class="fas fa-euro-sign"></i>&nbsp;&nbsp;Check Out</a>
+    <a class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal"><i class="fas fa-euro-sign"></i>&nbsp;&nbsp;Check Out</a>
+    <!-- Modal -->
+    <div class="modal fade"
+         id="myModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Clic Accept and your Order will be in progress... A representative will contact you soon to finalize the
+                    purchase...
+                </div>
+                <div class="modal-footer">
+                    <form role="form" action="@Url.Action("CheckOut", "Computers")" class="form-horizontal" method="POST">
+                        <button type="submit" class="btn btn-secondary" id="Accept">Accept</button>
+                    </form>
+                    @*<button asp-action="CheckOut" type="button" class="btn btn-primary">Save changes</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<script type="text/javascript">
+
+    @*$('#Accept').click(function (e) {
+      // Prevent your default behavior
+      e.preventDefault();
+      // Get the key for the element you want to delete (perhaps reading from a hidden field etc.)
+      //var keyToDelete = $('#YourKey').val();
+      // Perform your POST to delete the element
+      $.get('@Url.Action("CheckOut","Computer")', function(){
+           // alert('You have successfully deleted');
+            $('#confirmation').modal('hide');
+      });
+})*@
+
+
+</script>

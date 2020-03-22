@@ -26,11 +26,11 @@ namespace ComputerApp.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<Order> GetOrderItemAsyn()
+        public async Task<Order> GetOrderItemAsync(bool checkOut)
         {
             AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
             Order order = await _context.Order
-                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id && orderItem.CheckOut == false)
+                .Where(orderItem => orderItem.AppUserId == myCurrentUser.Id && orderItem.CheckOut == checkOut)
                 .Include(pcOrderItem => pcOrderItem.ComputerOrders)
                     .ThenInclude(orderItem => orderItem.Order)
                 .Include(pcOrderItem => pcOrderItem.ComputerOrders)
@@ -58,22 +58,6 @@ namespace ComputerApp.Services
             }
             return (order.ComputerOrders.Count());
         }
-
-        //public async Task SetSessionCartItems(int? cantidad)
-        //{
-        //    AppUser myCurrentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-
-        //    if (myCurrentUser != null)
-        //    {
-        //        if (cantidad == null)
-        //        {
-        //            cantidad = await GetHowManyComputerHasCurrentUserAsync();
-        //        }
-        //    }
-
-        //    HttpContext.Session.SetString("userCartItems", JsonConvert.SerializeObject(cantidad));
-
-        //}
 
     }
 }

@@ -48,7 +48,7 @@ namespace ComputerApp.Controllers
 
             ViewData["myList"] = dataForShoppingCartVM.MyList;//myList;
 
-            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync();
+            ViewData["totalPrice"] = await _helperService.GetTotalOrderPriceAsync(false);
             HttpContext.Session.SetString("SessionCartItemsTotalPrice", JsonConvert.SerializeObject(ViewData["totalPrice"]));
             HttpContext.Session.SetString("SessionCartItems", JsonConvert.SerializeObject(dataForShoppingCartVM.DataToSendToView));
 
@@ -236,7 +236,7 @@ namespace ComputerApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Order orderAssociatedWUser = await _orderService.GetOrderItemAsyn();
+            Order orderAssociatedWUser = await _orderService.GetOrderItemAsync(false);
 
             //.ToListAsync();
 
@@ -336,79 +336,15 @@ namespace ComputerApp.Controllers
         }
 
         //-----------------------------------------END BUILD OWN COMPUTER
-        //public double GetComputerTotalPrice(ComponentVM dataFromView)
-        //{
-        //    Type type = typeof(ComponentVM);
-        //    int NumberOfRecords = type.GetProperties().Length;
-        //    int[] idArray = new int[NumberOfRecords];
-        //    double totalPrice = 0;
-        //    Component component = new Component();
-        //    idArray[0] = dataFromView.HddId; idArray[1] = dataFromView.SoftwareId; idArray[2] = dataFromView.ProcessorId; idArray[3] = dataFromView.MemoryId; idArray[4] = dataFromView.OSId;
-        //    foreach (int item in idArray)
-        //    {
-        //        component = _context.Component.Where(c => c.Id == item).FirstOrDefault<Component>();
-        //        totalPrice += component.Price;
-        //    }
-        //    return (totalPrice);
-        //}
 
-        //Inserta un elemento Computer nuevo en la bd Computer y devuelve el id de este elemento
-        //public async Task<int> CreateFromCode([Bind("Id,Name,Price,IsDesktop,ImgUrl,OrderId")] Computer computer)
-        //public async Task<int> InsertComputerToDB(Computer computer)
-        //{
-        //    _context.Add(computer);
-        //    await _context.SaveChangesAsync();
+        //public async Task<IActionResult> CheckOut(int id, ComponentVM dataFromView)
+        [HttpPost]
+        public async Task<IActionResult> CheckOut(int id, ComponentVM dataFromView)
+        {
+            bool exito = await _helperService.UpdateCheckOutFieldOfCurrentOrderAsync(true);
 
-        //    return computer.Id;
-        //}
-        //public async Task<int> InsertComponentsToComputerComponentDB(ComponentVM component, int computerId, int orderId)
-        //{
-        //    Type type = typeof(ComponentVM);
-        //    int NumberOfRecords = type.GetProperties().Length;
-        //    int[] idArray = new int[NumberOfRecords];
-
-        //    ComputerComponent computerComponent = new ComputerComponent();
-        //    idArray[0] = component.HddId; idArray[1] = component.SoftwareId; idArray[2] = component.ProcessorId; idArray[3] = component.MemoryId; idArray[4] = component.OSId;
-        //    //computerComponent.ComputerId = computerId;
-        //    foreach (var item in idArray)
-        //    {
-        //        computerComponent = new ComputerComponent();
-        //        computerComponent.ComputerId = computerId;
-        //        computerComponent.ComponentId = item;
-        //        //computerComponent.OrderId = orderId;
-        //        _context.Add(computerComponent);
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    return computerComponent.Id;
-        //}
-
-        ////Inserta un elemento Order nuevo en la bd Order y devuelve el id de este elemento
-        //public async Task<int> InsertOrderToDBAsync(Order order)
-        //{
-        //    _context.Add(order);
-        //    await _context.SaveChangesAsync();
-
-        //    return order.Id;
-        //}
-
-        ////Inserta un elemento ComputerOrder nuevo en la bd ComputerOrder y devuelve el id de este elemento
-        //public async Task<int> InsertComputerOrderToDB(int orderId, int computerId)
-        //{
-        //    ComputerOrder computerOrder = new ComputerOrder();
-        //    computerOrder.OrderId = orderId;
-        //    computerOrder.ComputerId = computerId;
-        //    _context.Add(computerOrder);
-        //    await _context.SaveChangesAsync();
-
-        //    return computerOrder.Id;
-        //}
-        //public async Task<int> InsertOrderToUser(Order order)
-        //{
-        //    _context.Add(order);
-        //    await _context.SaveChangesAsync();
-        //    return order.Id;
-        //}
+            return RedirectToAction(nameof(Index), "Home");
+        }
 
     }
 }
