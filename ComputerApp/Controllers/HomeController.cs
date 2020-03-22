@@ -14,9 +14,11 @@ using ComputerApp.Services;
 using ComputerApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ComputerApp.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -56,6 +58,13 @@ namespace ComputerApp.Controllers
 
             HttpContext.Session.SetString("SessionCartItemsNumber", JsonConvert.SerializeObject(cantidad));
 
+            ViewData["CTypes"] = await _context.CType.ToListAsync();
+            ViewData["ComputerComponents"] = await _context.ComputerComponent.Include(c => c.Component).Include(c => c.Computer).ToListAsync();
+            ViewData["Components"] = await _context.Component.Include(c => c.ComponentType).ToListAsync();
+            //ViewData["Computers"] = await _context
+            //ViewData["Orders"] = await _context
+            //ViewData["Users"] = await _context
+
             return View();
         }
 
@@ -63,6 +72,7 @@ namespace ComputerApp.Controllers
         {
             return View();
         }
+
 
         public async Task<IActionResult> Desktop(bool? isDesktop)
         {
@@ -86,6 +96,7 @@ namespace ComputerApp.Controllers
             return View(myComputers);
         }
 
+        [Authorize]
         public async Task<ActionResult> AddToCart(int computerId)
         {
             List<Item> cart = new List<Item>();
