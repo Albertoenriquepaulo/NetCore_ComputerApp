@@ -153,6 +153,25 @@ namespace ComputerApp.Controllers
             return RedirectToAction(nameof(Desktop), new { isDesktop = computer.IsDesktop });
         }
 
+
+        /// <summary>
+        /// Aqui me quede 23/03
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult EditUser(string id)
+        {
+            AppUser myUser = _userManager.Users.Include(o => o.Order).First(u => u.Id == id);
+            return View(myUser);
+        }
+
+        [HttpPost]
+        public IActionResult EditUser()
+        {
+            AppUser myUser = _userManager.Users.Include(o => o.Order).First(u => u.Id == id);
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
