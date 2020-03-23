@@ -18,7 +18,7 @@
     {
         cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(Context.Session.GetString("SessionCartItems"));
     }
-   
+
 }
 
 
@@ -60,8 +60,7 @@
                                     <span class="badge badge-dark" style="width: auto;">@item.Qty (unit)</span>
                                     <span>@string.Format("€{0:N2}", item.Price)</span>
                                     @*<span class="badge badge-primary">@string.Format("€{0:N2}", item.Price)</span>
-                                <span class="badge badge-dark">Quantity: @item.Qty</span>*@
-
+                                        <span class="badge badge-dark">Quantity: @item.Qty</span>*@
                                 </span>
                             </span>
                             <span class="item-right">

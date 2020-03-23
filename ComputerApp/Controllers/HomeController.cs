@@ -63,7 +63,7 @@ namespace ComputerApp.Controllers
             ViewData["Components"] = await _context.Component.Include(c => c.ComponentType).ToListAsync();
             //ViewData["Computers"] = await _context
             //ViewData["Orders"] = await _context
-            //ViewData["Users"] = await _context
+            ViewData["MyUsers"] = await _userManager.Users.ToListAsync();
 
             return View();
         }

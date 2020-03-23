@@ -17,6 +17,8 @@
     List<Computer> Computers = await HelperService.BuildComputerListAsync(true);
     List<Computer> Laptops = await HelperService.BuildComputerListAsync(false);
     Computers.AddRange(Laptops);
+
+    List<AppUser> MyUsers = (List<AppUser>)ViewData["MyUsers"];
 }
 
 @{
@@ -207,7 +209,46 @@
                 Order -> Hay que implementarla, sacarla del Index de Order
             </div>
             <div class="tab-pane fade" id="userAdministration" role="tabpanel" aria-labelledby="userAdministration-tab">
-                Administracion de usuarios -> Hay que implementarla
+                @if (MyUsers.Any())
+                {
+                    <a asp-area="Identity" asp-page="/Account/Register" 
+                       class="btn btn-primary mb-3" style="width:auto">
+                        Add new user
+                    </a>
+
+                    foreach (var user in MyUsers)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                User Id : @user.Id
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@user.UserName</h5>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-danger">Edit</a>
+                                <a href="#" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            No users created yet
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Use the button below to create a user
+                            </h5>
+                            <a class="btn btn-primary" style="width:auto"
+                               asp-controller="Account" asp-action="Register">
+                                Add new user
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     }
