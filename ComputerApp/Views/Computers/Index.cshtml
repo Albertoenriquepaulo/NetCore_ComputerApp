@@ -94,41 +94,48 @@
     </tbody>
 </table>
 <hr />
-<p class="text-right">
-    <strong>Total Price:</strong>&nbsp;&nbsp;@ViewData["totalPrice"]
-</p>
-<hr />
-<div style="display:flex;justify-content: flex-end;">
-    <a class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal"><i class="fas fa-euro-sign"></i>&nbsp;&nbsp;Check Out</a>
-    <!-- Modal -->
-    <div class="modal fade"
-         id="myModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">Order</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Clic Accept and your Order will be in progress... A representative will contact you soon to finalize the
-                    purchase...
-                </div>
-                <div class="modal-footer">
-                    <form role="form" action="@Url.Action("CheckOut", "Computers")" class="form-horizontal" method="POST">
-                        <button type="submit" class="btn btn-secondary" id="Accept">Accept</button>
-                    </form>
-                    @*<button asp-action="CheckOut" type="button" class="btn btn-primary">Save changes</button>*@
+
+@if (ViewBag.myList.Count != 0) //Cuando no hay elementos en la lista, no hya nada que CheckOut ni TotalPrice to show
+{
+    <p class="text-right">
+        <strong>Total Price:</strong>&nbsp;&nbsp;@ViewData["totalPrice"]
+    </p>
+    <hr />
+    <div style="display:flex;justify-content: flex-end;">
+        <a class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal"><i class="fas fa-euro-sign"></i>&nbsp;&nbsp;Check Out</a>
+        <!-- Modal -->
+        <div class="modal fade"
+             id="myModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Order</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Click on Accept</strong> and your Order will be in progress</p>
+                        <p>A representative will contact you soon to finalize the purchase!!!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <form role="form" action="@Url.Action("CheckOut", "Computers")" class="form-horizontal" method="POST">
+                            <button type="submit" class="btn btn-secondary" id="Accept">Accept</button>
+                        </form>
+                        @*<button asp-action="CheckOut" type="button" class="btn btn-primary">Save changes</button>*@
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+}
+
+
 
 
 <script type="text/javascript">
