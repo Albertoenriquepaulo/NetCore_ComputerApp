@@ -76,11 +76,11 @@ body {
 }
 
 a:hover {
-    color: white;
+    color: #000000;
 }
 
 .nav-link:hover {
-    color: white !important;
+    color: #67B0FF !important;
 }
 
 

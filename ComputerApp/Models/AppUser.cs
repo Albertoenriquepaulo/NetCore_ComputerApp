@@ -22,5 +22,7 @@ namespace ComputerApp.Models
 
         //Nav Properties
         public Order Order { get; set; }
+
+        //https://entityframework.net/es/tutorial/1000055/one-to-many-relationship
     }
 }

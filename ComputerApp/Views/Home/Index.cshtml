@@ -211,8 +211,7 @@
             <div class="tab-pane fade" id="userAdministration" role="tabpanel" aria-labelledby="userAdministration-tab">
                 @if (MyUsers.Any())
                 {
-                    <a asp-area="Identity" asp-page="/Account/Register" 
-                       class="btn btn-primary mb-3" style="width:auto">
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary mb-3" style="width:auto">
                         Add new user
                     </a>
 
@@ -226,7 +225,7 @@
                                 <h5 class="card-title">@user.UserName</h5>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-danger">Edit</a>
+                                <a href="#" class="btn btn-primary">Edit</a>
                                 <a href="#" class="btn btn-danger">Delete</a>
                             </div>
                         </div>
@@ -242,8 +241,7 @@
                             <h5 class="card-title">
                                 Use the button below to create a user
                             </h5>
-                            <a class="btn btn-primary" style="width:auto"
-                               asp-controller="Account" asp-action="Register">
+                            <a class="btn btn-primary" style="width:auto" asp-area="Identity" asp-page="/Account/Register">
                                 Add new user
                             </a>
                         </div>
