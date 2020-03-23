@@ -58,43 +58,44 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="nav-item ">
+                    <a class="text-white-50" style="color: white; padding-left:15px;" asp-area="" asp-controller="Home" asp-action="Index" style="padding-top:10px; font-size: 36px;"><i class="fas fa-home fa-2x"></i></a>
+                </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
                         @if (isAdmin)
                         {
-                            <li class="nav-item">
+                            @*<li class="nav-item ">
                                 <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index" style="padding-top:10px; font-size: 36px;"><i class="fas fa-home fa-2x"></i></a>
-                            </li>
-                            @*<li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>*@
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Components" asp-action="Index">Componentes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="ComputerComponents" asp-action="Index">Computer Componentes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Ctypes" asp-action="Index">Component Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
-                            </li>
+
+                            @*<li class="nav-item">
+                        <a class="nav-link text-white-50" asp-area="" asp-controller="Components" asp-action="Index">Componentes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" asp-area="" asp-controller="ComputerComponents" asp-action="Index">Computer Componentes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" asp-area="" asp-controller="Ctypes" asp-action="Index">Component Types</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
+                    </li>*@
 
                             //Delete This
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
-                            </li>
+                            //<li class="nav-item">
+                            //    <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
+                            //</li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home fa-3x"></i></a>
-                            </li>
                             @*<li class="nav-item">
-                                <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
+                                <a class="nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home fa-3x"></i></a>
                             </li>*@
+                            @*<li class="nav-item">
+                        <a class="nav-link text-white-50" asp-area="" asp-controller="Computers" asp-action="Index">Computer</a>
+                    </li>*@
                         }
 
                     </ul>

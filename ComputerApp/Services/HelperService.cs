@@ -154,7 +154,7 @@ namespace ComputerApp.Services
         }
 
 
-        // Contruye una lista de computadoras exeptuando la "Custom Computer" y si es Desktop or Laptop
+        // Contruye una lista de computadoras exceptuando la "Custom Computer" y si es Desktop or Laptop
         public async Task<List<Computer>> BuildComputerListAsync(bool isDesktop)
         {
             List<Computer> computersFromContext = await _context.Computer.ToListAsync();

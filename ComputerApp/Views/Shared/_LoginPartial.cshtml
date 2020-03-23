@@ -35,14 +35,14 @@
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-white" style="padding-top: 12px;" data-toggle="tooltip" title="Click to Logout"><i class="fas fa-sign-out-alt"></i></button>  @*LOGOUT*@
+                <button type="submit" class="nav-link btn btn-link text-white" style="padding-top: 12px;" data-toggle="tooltip" title="Click to Logout"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout</button>  @*LOGOUT*@
             </form>
         </li>
 
         <li id="shopping-cart" class="dropdown">
             @if (!isAdmin)
             {
-                <a href="#" class="dropdown-toggle btn btn-outline-primary" data-toggle="dropdown" role="button" aria-expanded="false">
+                <a href="#" style="text-decoration: none;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                     <span class="fa fa-shopping-cart bigicon"></span>&nbsp;(@cartItemsNumber)<span class="caret"></span>
                 </a>
             }

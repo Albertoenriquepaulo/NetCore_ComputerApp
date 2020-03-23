@@ -13,6 +13,10 @@
     List<CType> CTypes = (List<CType>)ViewData["CTypes"];
     List<ComputerComponent> ComputerComponents = (List<ComputerComponent>)ViewData["ComputerComponents"];
     List<Component> Components = (List<Component>)ViewData["Components"];
+
+    List<Computer> Computers = await HelperService.BuildComputerListAsync(true);
+    List<Computer> Laptops = await HelperService.BuildComputerListAsync(false);
+    Computers.AddRange(Laptops);
 }
 
 @{
@@ -81,7 +85,7 @@
         <div class="tab-content text-left" id="myTabContent">
             <div class="tab-pane fade show active" id="ctypes" role="tabpanel" aria-labelledby="ctypes-tab">
                 <p style="padding-left:10px; padding-top:15px;">
-                    <a asp-action="Create" asp-controller="CTypes">Create New</a>
+                    <a class="btn btn-outline-primary" asp-action="Create" asp-controller="CTypes">Create New</a>
                 </p>
                 <table class="table">
                     <thead>
@@ -113,7 +117,7 @@
             </div>
             <div class="tab-pane fade" id="components" role="tabpanel" aria-labelledby="components-tab">
                 <p style="padding-left:10px; padding-top:15px;">
-                    <a asp-controller="Components" asp-action="Create">Create New</a>
+                    <a class="btn btn-outline-primary" asp-controller="Components" asp-action="Create">Create New</a>
                 </p>
                 <table class="table">
                     <thead>
@@ -156,7 +160,48 @@
                 </table>
             </div>
             <div class="tab-pane fade" id="computers" role="tabpanel" aria-labelledby="computers-tab">
-                Computer -> Hay que hacerla from cero
+                <p style="padding-left:10px; padding-top:15px;">
+                    <a class="btn btn-outline-primary" asp-controller="Computers" asp-action="Create">Create New</a>
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 560px;">
+                                Name
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                IsDesktop
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Computers)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsDesktop)
+                                </td>
+                                <td>
+                                    <div>
+                                        <a class="btn btn-outline-primary" asp-controller="Computers" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
+                                        <a class="btn btn-outline-info" asp-controller="Computers" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a>
+                                        <a class="btn btn-outline-danger" asp-controller="Computers" asp-action="Delete" asp-route-id="@item.Id"><i class="far fa-trash-alt"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
             <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                 Order -> Hay que implementarla, sacarla del Index de Order
