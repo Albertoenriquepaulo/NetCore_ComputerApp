@@ -7,6 +7,7 @@
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 @inject HelperService HelperService
+@inject GlobalValuesService GlobalValuesService
 
 @{
     ViewData["Title"] = "Home Page";
@@ -229,7 +230,7 @@
                             </div>
                             <div class="card-footer">
                                 <a class="btn btn-outline-primary" asp-action="EditUser" asp-route-id="@user.Id">Edit</a>
-                                <a class="btn btn-outline-danger" asp-action="EditUser" asp-route-id="@user.Id">Delete</a>
+                                <a class="btn btn-outline-danger" asp-action="DeleteUser" asp-route-id="@user.Id">Delete</a>
                             </div>
                         </div>
                     }
@@ -259,4 +260,49 @@
         <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Desktop" asp-route-isDesktop="False"><i class="fas fa-laptop" style="font-size:15rem"></i><br />Laptop</a>
     }
 
+
+    @if (GlobalValuesService.GetShowMessage())
+    {
+        GlobalValuesService.SetShowMessage(false);
+        //https://love2dev.com/blog/custom-javascript-alert/
+        <script type="x-template" id="banner-template">
+            <div class="banner banner-top alert-danger active" role="alert">
+                @GlobalValuesService.GetMessage()
+                <span class="banner-close"></span>
+            </div>
+        </script>
+        <script>
+            function getBannerTemplate() {
+                var template = document.querySelector("#banner-template");
+                return template.innerHTML;
+            }
+
+            function createFragment(htmlStr) {
+                var frag = document.createDocumentFragment(),
+                    temp = document.createElement('div');
+                temp.innerHTML = htmlStr;
+                while (temp.firstChild) {
+                    frag.appendChild(temp.firstChild);
+                }
+                return frag;
+            }
+
+            function injectTemplate(template) {
+                document.body.appendChild(createFragment(template));
+            }
+            var simpleAlert = document.querySelector(".simple-alert");
+            injectTemplate(getBannerTemplate());
+            var btnClose = document.querySelector(".banner-close");
+            btnClose.addEventListener("click", function (closeEvt) {
+                var banner = document.querySelector(".banner");
+                banner.parentNode.removeChild(banner);
+            });
+
+        </script>
+    }
+
 </div>
+
+@section Scripts {
+    <link href="@Url.Content("~/css/banner-popup.css")" rel="stylesheet" type="text/css" />
+}

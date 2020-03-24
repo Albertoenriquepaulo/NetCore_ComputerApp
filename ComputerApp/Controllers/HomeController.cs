@@ -27,9 +27,11 @@ namespace ComputerApp.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly OrderService _orderService;
         private readonly HelperService _helperService;
+        private readonly GlobalValuesService _globalValuesService;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<AppUser> userManager,
-                                SignInManager<AppUser> signInManager, OrderService orderService, HelperService helperService)
+                                SignInManager<AppUser> signInManager, OrderService orderService, HelperService helperService,
+                                GlobalValuesService globalValuesService)
         {
             _logger = logger;
             _userManager = userManager;
@@ -37,6 +39,7 @@ namespace ComputerApp.Controllers
             _context = context;
             _orderService = orderService;
             _helperService = helperService;
+            _globalValuesService = globalValuesService;
 
         }
 
@@ -44,8 +47,6 @@ namespace ComputerApp.Controllers
         {
 
             int cantidad = await _orderService.GetHowManyComputerHasCurrentUserAsync(false);
-            //List<ComputerVM> cartDataFromControllers = new List<ComputerVM>();
-            //cartDataFromControllers = JsonConvert.DeserializeObject<List<ComputerVM>>(HttpContext.Session.GetString("SessionCartItems"));
 
             //To Update ShoppingCartInfo
 
@@ -64,6 +65,8 @@ namespace ComputerApp.Controllers
             //ViewData["Computers"] = await _context
             //ViewData["Orders"] = await _context
             ViewData["MyUsers"] = await _userManager.Users.ToListAsync();
+
+            ViewBag.Message = $"The user has been deleted";
 
             return View();
         }
@@ -127,7 +130,7 @@ namespace ComputerApp.Controllers
             };
 
             //Cuando el usuario no tiene una order, se crea una nueva, con (order.IsCart = true) y (order.CheckOut) = false;
-            if (orderAssociatedWUser == null)
+            if (orderAssociatedWUser == null || orderAssociatedWUser.Id == 0)
             {
                 order.Price = computer.Price;
                 order.Qty = 1;
@@ -171,8 +174,6 @@ namespace ComputerApp.Controllers
             AppUser myUser = _userManager.Users.Include(o => o.Order).First(u => u.Id == id);
             IEnumerable<string> roles = await _helperService.GetUserRoleAsync(myUser);
 
-            ViewBag.Message = $"{myUser.Name.ToUpper()}, your Rol has been updated to {selectedRole.ToUpper()}";
-
             if (_helperService.RolExistAsync(roles, selectedRole))
             {
                 await _helperService.RemoveRolesAsync(myUser, roles);
@@ -183,8 +184,45 @@ namespace ComputerApp.Controllers
                 await _helperService.AddRolAsync(myUser, selectedRole);
             }
 
-            //return RedirectToAction(nameof(EditUser));
+            _globalValuesService.SetShowMessage(true);
+            _globalValuesService.SetMessage($"Rol of the user '{myUser.Name.ToUpper()}' has been updated to '{selectedRole.ToUpper()}'");
             return View(myUser);
+        }
+
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            AppUser myUser = await _userManager.FindByIdAsync(id);
+            string msg = null;
+
+            if (myUser == null)
+            {
+                msg = $"User with Id = {id} cannot be found";
+            }
+            else if (myUser.Name == "root")
+            {
+                msg = "The user 'root' can not be deleted";
+            }
+            else if (myUser.Email == User.Identity.Name)
+            {
+                msg = "You can not delete yourselve...";
+            }
+            else
+            {
+                await _helperService.DeleteOrderByUserIdAsync(id);
+                var result = await _userManager.DeleteAsync(myUser);
+
+                if (result.Succeeded)
+                {
+                    msg = $"The user '{myUser.Name}' has been removed from the Database";
+                }
+                else
+                {
+                    msg = $"An unknown error ocurred. Contact the developer of this application...";
+                }
+            }
+            _globalValuesService.SetShowMessage(true);
+            _globalValuesService.SetMessage(msg);
+            return LocalRedirect("~/");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

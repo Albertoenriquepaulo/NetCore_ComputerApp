@@ -185,10 +185,9 @@ namespace ComputerApp.Services
             {
                 List<Component> ComponentList = await _context.Component.ToListAsync();
 
-
                 Order applicationDbContext = await _orderService.GetOrderItemAsync(false);
 
-                if (applicationDbContext != null)
+                if (applicationDbContext != null && applicationDbContext.ComputerOrders != null)
                 {
                     foreach (var item in applicationDbContext.ComputerOrders)
                     {
@@ -209,7 +208,15 @@ namespace ComputerApp.Services
                                                     .Select(pc => pc.First())
                                                     .ToList();
 
-                dataToSendToView = await LoadComputerVMAsync(myList, ComponentList);
+                if (ComponentList != null)
+                {
+                    dataToSendToView = await LoadComputerVMAsync(myList, ComponentList);
+                }
+                else
+                {
+                    dataToSendToView = await LoadComputerVMAsync(myList, new List<Component>());
+                }
+
 
                 DataForShoppingCartVM dataForShoppingCartVM = new DataForShoppingCartVM(dataToSendToView, myList);
 
@@ -227,7 +234,7 @@ namespace ComputerApp.Services
             {
                 Order Order = await _orderService.GetOrderItemAsync(checkOut);
 
-                if (Order != null) //Cuando el usuario ya ha introducido al menos una order en cart
+                if (Order != null && Order.ComputerOrders != null) //Cuando el usuario ya ha introducido al menos una order en cart
                 {
                     totalPrice = Order.ComputerOrders.Select(co => co.Computer).Select(c => c.Price).Sum();
                 }
@@ -257,7 +264,7 @@ namespace ComputerApp.Services
             }
             return false;
         }
-        public async Task DeleteOrderAsync(bool checkOut)
+        public async Task DeleteOrderByCheckOutValueAsync(bool checkOut)
         {
             Order order = await _orderService.GetOrderItemAsync(checkOut); //Buscamos el order que debe estar en el contrario de checkOut
             _context.Order.Remove(order);
@@ -292,6 +299,21 @@ namespace ComputerApp.Services
         {
             UserManager<AppUser> userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
             await userManager.RemoveFromRolesAsync(myUser, roles);
+        }
+
+        //Elimna un order dado el ID del usuario, en este caso solo hay un order por user
+        //Si modificamos esta relación habrá que modificar este metodo, ya que el where puede
+        //que devuelva una lista
+        public async Task DeleteOrderByUserIdAsync(string id)
+        {
+            Order order = await _context.Order.Where(o => o.AppUserId == id).FirstOrDefaultAsync();
+
+            if (order != null)
+            {
+                _context.Order.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+
         }
     }
 }

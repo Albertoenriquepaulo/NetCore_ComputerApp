@@ -342,7 +342,7 @@ namespace ComputerApp.Controllers
         public async Task<IActionResult> CheckOut(int id, ComponentVM dataFromView)
         {
             //bool exito = await _helperService.UpdateCheckOutFieldOfCurrentOrderAsync(true);
-            await _helperService.DeleteOrderAsync(false);
+            await _helperService.DeleteOrderByCheckOutValueAsync(false);
             return RedirectToAction(nameof(Index), "Home");
         }
 

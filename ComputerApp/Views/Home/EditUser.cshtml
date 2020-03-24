@@ -1,4 +1,6 @@
-﻿@model AppUser
+﻿@using ComputerApp.Services;
+@model AppUser
+@inject GlobalValuesService GlobalValuesService
 @{
     ViewData["Title"] = "EditUser";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -23,18 +25,48 @@
         </div>
         <p><button type="submit">Update Rol</button></p>
     </form>
-    @if (ViewBag.Message != null)
+    @if (GlobalValuesService.GetShowMessage())
     {
-        <script type="text/javascript">
-
-            window.onload = function () {
-                alert("@ViewBag.Message");
-            };
+        GlobalValuesService.SetShowMessage(false);
+        //https://love2dev.com/blog/custom-javascript-alert/
+        <script type="x-template" id="banner-template">
+            <div class="banner banner-top alert-primary active" role="alert">
+                @GlobalValuesService.GetMessage()
+                <span class="banner-close"></span>
+            </div>
         </script>
+        <script>
+            function getBannerTemplate() {
+                var template = document.querySelector("#banner-template");
+                return template.innerHTML;
+            }
 
+            function createFragment(htmlStr) {
+                var frag = document.createDocumentFragment(),
+                    temp = document.createElement('div');
+                temp.innerHTML = htmlStr;
+                while (temp.firstChild) {
+                    frag.appendChild(temp.firstChild);
+                }
+                return frag;
+            }
+
+            function injectTemplate(template) {
+                document.body.appendChild(createFragment(template));
+            }
+            var simpleAlert = document.querySelector(".simple-alert");
+            injectTemplate(getBannerTemplate());
+            var btnClose = document.querySelector(".banner-close");
+            btnClose.addEventListener("click", function (closeEvt) {
+                var banner = document.querySelector(".banner");
+                banner.parentNode.removeChild(banner);
+            });
+
+        </script>
     }
 </div>
 
 @section Scripts {
     <link href="@Url.Content("~/css/edit-user.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/banner-popup.css")" rel="stylesheet" type="text/css" />
 }

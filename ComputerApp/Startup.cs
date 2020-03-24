@@ -47,13 +47,13 @@ namespace ComputerApp
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<OrderService>();
             services.AddTransient<HelperService>();
+            services.AddSingleton<GlobalValuesService>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
 
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromSeconds(3600);
-
             });
 
         }
