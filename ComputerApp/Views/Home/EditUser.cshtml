@@ -23,6 +23,16 @@
         </div>
         <p><button type="submit">Update Rol</button></p>
     </form>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+        </script>
+
+    }
 </div>
 
 @section Scripts {

@@ -171,6 +171,8 @@ namespace ComputerApp.Controllers
             AppUser myUser = _userManager.Users.Include(o => o.Order).First(u => u.Id == id);
             IEnumerable<string> roles = await _helperService.GetUserRoleAsync(myUser);
 
+            ViewBag.Message = $"{myUser.Name.ToUpper()}, your Rol has been updated to {selectedRole.ToUpper()}";
+
             if (_helperService.RolExistAsync(roles, selectedRole))
             {
                 await _helperService.RemoveRolesAsync(myUser, roles);
@@ -181,7 +183,8 @@ namespace ComputerApp.Controllers
                 await _helperService.AddRolAsync(myUser, selectedRole);
             }
 
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(EditUser));
+            return View(myUser);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
