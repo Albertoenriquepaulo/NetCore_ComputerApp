@@ -166,10 +166,22 @@ namespace ComputerApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditUser()
+        public async Task<IActionResult> EditUser(string id, string selectedRole)
         {
             AppUser myUser = _userManager.Users.Include(o => o.Order).First(u => u.Id == id);
-            return View();
+            IEnumerable<string> roles = await _helperService.GetUserRoleAsync(myUser);
+
+            if (_helperService.RolExistAsync(roles, selectedRole))
+            {
+                await _helperService.RemoveRolesAsync(myUser, roles);
+                await _helperService.AddRolAsync(myUser, selectedRole);
+            }
+            else
+            {
+                await _helperService.AddRolAsync(myUser, selectedRole);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

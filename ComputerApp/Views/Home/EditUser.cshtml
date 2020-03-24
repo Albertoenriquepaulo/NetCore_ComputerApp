@@ -1,0 +1,30 @@
+﻿@model AppUser
+@{
+    ViewData["Title"] = "EditUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit User Rol </h1>
+<div class="card">
+    <form asp-action="EditUser">
+        <input type="hidden" asp-for="Id" />
+        <img src="https://drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg" alt="John" style="width:300px; height:200px;">
+        <h1>@Model.Name</h1>
+        <p class="title">@Model.UserName</p>
+        <div style="padding-bottom:15px;" class="d-flex justify-content-center">
+            <div class="custom-control custom-radio" style="padding-right:15px;">
+                <input type="radio" class="custom-control-input" id="defaultChecked" name="selectedRole" value="client" checked>
+                <label class="custom-control-label" for="defaultChecked">Client</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" id="defaultUnchecked" name="selectedRole" value="admin">
+                <label class="custom-control-label" for="defaultUnchecked">Admin</label>
+            </div>
+        </div>
+        <p><button type="submit">Update Rol</button></p>
+    </form>
+</div>
+
+@section Scripts {
+    <link href="@Url.Content("~/css/edit-user.css")" rel="stylesheet" type="text/css" />
+}

@@ -4,6 +4,7 @@ using ComputerApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace ComputerApp.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly OrderService _orderService;
+        private readonly IServiceProvider _serviceProvider;
         public string CUSTOM_COMPUTER_NAME
         {
             get
@@ -28,13 +30,16 @@ namespace ComputerApp.Services
 
         //public  MyProperty { get; set; }
 
-        public HelperService(ApplicationDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor, OrderService orderService)
+        public HelperService(ApplicationDbContext context, UserManager<AppUser> userManager,
+                            SignInManager<AppUser> signInManager, IHttpContextAccessor httpContextAccessor,
+                            OrderService orderService, IServiceProvider serviceProvider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _orderService = orderService;
+            _serviceProvider = serviceProvider;
         }
 
         public double GetComputerTotalPrice(ComponentVM dataFromView)
@@ -252,12 +257,41 @@ namespace ComputerApp.Services
             }
             return false;
         }
-
         public async Task DeleteOrderAsync(bool checkOut)
         {
             Order order = await _orderService.GetOrderItemAsync(checkOut); //Buscamos el order que debe estar en el contrario de checkOut
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<string>> GetUserRoleAsync(AppUser myUser)
+        {
+            UserManager<AppUser> userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
+            var rolename = await userManager.GetRolesAsync(myUser);
+            return (IEnumerable<string>)rolename;
+        }
+
+        public bool RolExistAsync(IEnumerable<string> rols, string rol)
+        {
+            foreach (var item in rols)
+            {
+                if (item.Contains(rol))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public async Task AddRolAsync(AppUser myUser, string rol)
+        {
+            UserManager<AppUser> userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
+            await userManager.AddToRoleAsync(myUser, rol);
+
+        }
+
+        public async Task RemoveRolesAsync(AppUser myUser, IEnumerable<string> roles)
+        {
+            UserManager<AppUser> userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
+            await userManager.RemoveFromRolesAsync(myUser, roles);
         }
     }
 }

@@ -516,3 +516,4 @@ D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreap
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\ComputerOrders\Details.cshtml.g.cs
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\ComputerOrders\Edit.cshtml.g.cs
 D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\ComputerOrders\Index.cshtml.g.cs
+D:\BBKBootcamp\Projects\03 Modulo EF\ComputerApp\ComputerApp\obj\Debug\netcoreapp3.1\Razor\Views\Home\EditUser.cshtml.g.cs
